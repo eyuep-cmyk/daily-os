@@ -206,6 +206,11 @@
     </details>
     <div id="exList"></div>
     <button class="btn-green" style="width:100%;padding:15px;font-size:15px" onclick="finishWorkout()">✅ Workout abschließen & speichern</button>
+    <details class="card" style="margin-top:12px">
+      <summary>🏃 Ausdauer / Conditioning (1×/Woche)</summary>
+      <div class="sub" style="margin:10px 0 4px">Gelenkschonend, kein Laufzwang. An einem freien oder Schicht-Tag — schont Schulter & Rücken.</div>
+      <div id="condList"></div>
+    </details>
   </div>
 
   <!-- ===== GEIST ===== -->
@@ -404,6 +409,11 @@ const SHOP = {
   "Gewürze & Sonstiges":["Meersalz","Pfeffer","Zimt","Kurkuma","Ingwer","Honig"]
 };
 
+const CONDITIONING = [
+  {ic:"🚶", t:"Zone-2-Cardio · 20–30 Min", d:"Zügig gehen, Rad oder Crosstrainer — so locker, dass du noch reden könntest. 1×/Woche fix.", why:"Grundlagen-Ausdauer & Herzgesundheit, ohne die Muskel-Erholung zu stören."},
+  {ic:"💨", t:"Finisher · 3–5 Min (optional)", d:"Am Ende ein paar Runden 20 s zügig / 40 s locker (Bänder-Komplex oder schnelles Gehen).", why:"Kurzer Kondi-Kick — nur wenn Energie da ist, nie auf Kosten der Technik."},
+  {ic:"🫁", t:"Atem-Ausdauer", d:"5 Min ruhige Nasenatmung beim lockeren Cardio, oder Box-Breathing im Geist-Tab.", why:"Bessere CO₂-Toleranz & Entspannung — kein Aufprall, schont Schulter/Rücken."}
+];
 const PRECALL = [
   {t:"Power-Pose · 1 Min", d:"Aufrecht, Brust raus, Hände in die Hüften, Blick hoch. Senkt Stresshormone, hebt Selbstsicherheit."},
   {t:"Box-Breathing · 4-4-4-4", d:"4 Runden mit dem Kreis unten. Puls runter, Kopf klar."},
@@ -707,6 +717,16 @@ function renderHistory(){
 }
 function resetHistory(){if(confirm("Verlauf löschen?")){save("wkHistory",[]);renderHistory();renderHeader();}}
 
+/* ===================== CONDITIONING ===================== */
+function renderConditioning(){
+  const l=document.getElementById("condList"); l.innerHTML="";
+  CONDITIONING.forEach(c=>{
+    const el=document.createElement("div"); el.className="tip";
+    el.innerHTML=`<b>${c.ic} ${c.t}</b><div style="color:var(--muted);margin:4px 0 0;line-height:1.5">${c.d}</div><div style="color:var(--accent2);font-size:12px;margin-top:5px">✅ ${c.why}</div>`;
+    l.appendChild(el);
+  });
+}
+
 /* ===================== GEIST ===================== */
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 let precallDone={}, reframeOn={};
@@ -830,7 +850,7 @@ function buzz(){if(navigator.vibrate)navigator.vibrate([200,100,200]);}
   S.mode=load("wkMode","park"); S.sets=load("wkSets",2); S.wo=suggestNext();
   renderRoutine(); renderMeals(); renderShop();
   renderHeader(); renderSeg(); renderExercises(); renderHistory(); renderPhaseHint();
-  renderPrecall(); renderReframes(); renderObjections(); renderWins();
+  renderPrecall(); renderReframes(); renderObjections(); renderWins(); renderConditioning();
   timerMode("rest"); setPreset(90);
   if("wakeLock" in navigator){document.addEventListener("click",async()=>{try{await navigator.wakeLock.request("screen")}catch(e){}},{once:true});}
 })();
