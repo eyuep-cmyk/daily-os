@@ -68,6 +68,14 @@
   .setbox{width:42px;height:42px;border-radius:11px;border:1.5px solid var(--line);background:var(--card2);
     display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--muted)}
   .setbox.on{background:var(--accent2);color:#0d1117;border-color:var(--accent2)}
+  /* rep stepper */
+  .rep{display:flex;align-items:center;gap:0;border:1.5px solid var(--line);background:var(--card2);border-radius:11px;padding:2px;height:42px}
+  .rep.on{background:rgba(63,185,80,.15);border-color:var(--accent2)}
+  .repbtn{width:30px;height:34px;padding:0;font-size:19px;line-height:1;background:transparent;border:none;color:var(--muted)}
+  .repval{min-width:36px;text-align:center;font-weight:700;font-size:16px;color:var(--txt);user-select:none;cursor:pointer}
+  .rep.on .repval{color:var(--accent2)}
+  .stufe{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--card2);border:1px solid var(--line);color:var(--muted)}
+  .last{color:var(--muted)}
   .ex-actions{display:flex;gap:8px}.ex-actions button{flex:1;padding:9px;font-size:13px}
   .prog{font-size:12.5px;color:var(--blue);background:rgba(56,139,253,.08);border-radius:10px;padding:8px 10px;margin-top:8px;display:none;line-height:1.5}
   .prog.show{display:block}
@@ -169,7 +177,7 @@
           <button data-sets="4" onclick="setSets(4)">4</button>
         </div>
       </div>
-      <div class="sub" style="margin:8px 0 0">Wiedereinstieg Wo 1–2: <b style="color:var(--txt)">2 Sätze</b>, locker.</div>
+      <div class="sub" style="margin:8px 0 0" id="phaseHint">Wiedereinstieg Wo 1–2: <b style="color:var(--txt)">2 Sätze</b>, locker.</div>
     </div>
     <details class="card">
       <summary>🔥 Warm-up (5 Min)</summary>
@@ -336,22 +344,87 @@ const SHOP = {
   "Gewürze & Sonstiges":["Meersalz","Pfeffer","Zimt","Kurkuma","Ingwer","Honig"]
 };
 
+/* Jede Übung: id (stabiler Key), tag, repLow/repHigh (Spanne), tip, levels = aufsteigende
+   Schwierigkeits-Leiter [{park,band},...]. Doppelte Progression läuft über levels + Wdh. */
 const WORKOUTS = {
   A:{name:"Brust-Tag (Push)",ex:[
-    {tag:"Brust · Prio #1",park:"Liegestütze erhöht (Hände auf Stange/Bank)",band:"Band Chest Press",reps:"8–12 Wdh",prog:"erhöht → flach → Füße erhöht → Dips (ab Wo 4–6, schmerzfrei)"},
-    {tag:"Schulter · sanft",park:"Schräge Pike Push-up (leicht)",band:"Band Shoulder Press (leicht)",reps:"8–12 Wdh",prog:"Anfangs leicht. Keine schwere Überkopf-Innenrotation."},
-    {tag:"Trizeps · Arme #2",park:"Bench Dips (Füße am Boden, nicht zu tief)",band:"Band Triceps Pushdown",reps:"10–12 Wdh",prog:"Flach halten wegen Schulter. Später Diamond-Liegestütze."},
-    {tag:"Beine · Squat",park:"Bodyweight Squats → Bulgarian Split Squat",band:"Band Squat / Goblet Squat",reps:"10–15 Wdh",prog:"Richtung Pistol Squat. Knie folgt Zehen."},
-    {tag:"Waden",park:"Wadenheben an der Stufe",band:"Band-Wadenheben",reps:"15–20 Wdh",prog:"Volle Streckung oben, langsam runter."},
-    {tag:"Core · unterer Rücken",park:"Dead Bug",band:"Dead Bug",reps:"2×10/Seite",prog:"Unterer Rücken bleibt am Boden. Später Hollow Hold."}
+    {id:"a_brust",tag:"Brust · Prio #1",repLow:8,repHigh:12,
+     tip:"Erst Wdh hoch (8→12), dann nächste Stufe. Dips erst ab Wo 4–6, schmerzfrei.",
+     levels:[
+       {park:"Liegestütze erhöht (Hände auf Stange/Bank)",band:"Band Chest Press"},
+       {park:"Liegestütze flach",band:"Band Chest Press (stärkeres Band)"},
+       {park:"Liegestütze Füße erhöht (Decline)",band:"Band Chest Press einarmig"},
+       {park:"Dips (schmerzfrei!)",band:"Band Dips / tiefer Press"}
+     ]},
+    {id:"a_schulter",tag:"Schulter · sanft",repLow:8,repHigh:12,
+     tip:"Anfangs leicht. Keine schwere Überkopf-Innenrotation.",
+     levels:[
+       {park:"Schräge Pike Push-up (leicht)",band:"Band Shoulder Press (leicht)"},
+       {park:"Pike Push-up",band:"Band Shoulder Press"}
+     ]},
+    {id:"a_trizeps",tag:"Trizeps · Arme #2",repLow:10,repHigh:12,
+     tip:"Flach halten wegen Schulter. Später Diamond-Liegestütze.",
+     levels:[
+       {park:"Bench Dips (Füße am Boden, nicht zu tief)",band:"Band Triceps Pushdown"},
+       {park:"Diamond-Liegestütze",band:"Band Triceps Pushdown (stärker)"}
+     ]},
+    {id:"a_beine",tag:"Beine · Squat",repLow:10,repHigh:15,
+     tip:"Richtung Pistol Squat. Knie folgt Zehen.",
+     levels:[
+       {park:"Bodyweight Squats",band:"Band Squat / Goblet Squat"},
+       {park:"Bulgarian Split Squat (Fuß auf Bank)",band:"Band Bulgarian Split Squat"},
+       {park:"Pistol-Progression (assistiert)",band:"Band-assistierter Pistol Squat"}
+     ]},
+    {id:"a_waden",tag:"Waden",repLow:15,repHigh:20,
+     tip:"Volle Streckung oben, langsam runter.",
+     levels:[
+       {park:"Wadenheben an der Stufe",band:"Band-Wadenheben"}
+     ]},
+    {id:"a_core",tag:"Core · unterer Rücken",repLow:8,repHigh:12,
+     tip:"Wdh = pro Seite. Unterer Rücken bleibt am Boden. Ab Stufe 2 zählst du Sekunden Hollow Hold.",
+     levels:[
+       {park:"Dead Bug (pro Seite)",band:"Dead Bug (pro Seite)"},
+       {park:"Hollow Hold (Sek. halten)",band:"Hollow Hold (Sek. halten)"}
+     ]}
   ]},
   B:{name:"Rücken-Tag (Pull)",ex:[
-    {tag:"Rücken vertikal · Prio #2",park:"Negative / Band-unterstützte Klimmzüge",band:"Band Lat Pulldown",reps:"6–10 Wdh",prog:"Ziel 🎯 1. sauberer Klimmzug. Negative langsam (3–5 s)."},
-    {tag:"Rücken horizontal",park:"Australian / Inverted Rows",band:"Band Row (sitzend)",reps:"8–12 Wdh",prog:"Schulterblätter zusammenziehen."},
-    {tag:"Schulter-Reha · WICHTIG",park:"Face Pull + Außenrotation (Band)",band:"Face Pull + Außenrotation",reps:"2–3×15",prog:"Dein wichtigster Reha-Block. Nie weglassen."},
-    {tag:"Bizeps · Arme #2",park:"Untergriff-Rudern / Chin-up-Negative",band:"Band Bizeps Curl",reps:"8–12 Wdh",prog:"Ellenbogen fix. Chin-up-Negative baut Richtung Klimmzug."},
-    {tag:"Beine · Hinge/Lunge",park:"Ausfallschritte + Glute Bridge",band:"Band RDL + Glute Bridge",reps:"10–12 Wdh",prog:"RDL: Hüfte nach hinten, Rücken gerade."},
-    {tag:"Core · unterer Rücken",park:"Bird-Dog",band:"Bird-Dog",reps:"2×10/Seite",prog:"Langsam, Hüfte stabil."}
+    {id:"b_ruecken_vert",tag:"Rücken vertikal · Prio #2",repLow:6,repHigh:10,
+     tip:"Ziel 🎯 1. sauberer Klimmzug. Negative langsam (3–5 s).",
+     levels:[
+       {park:"Australian / Inverted Rows",band:"Band Lat Pulldown"},
+       {park:"Negative Klimmzüge (3–5 s)",band:"Band Lat Pulldown (stärker)"},
+       {park:"Band-unterstützte Klimmzüge",band:"Band-unterstützte Klimmzüge"},
+       {park:"1. sauberer Klimmzug 🎯",band:"Klimmzug (Band als Backup)"}
+     ]},
+    {id:"b_ruecken_hor",tag:"Rücken horizontal",repLow:8,repHigh:12,
+     tip:"Schulterblätter zusammenziehen.",
+     levels:[
+       {park:"Australian / Inverted Rows",band:"Band Row (sitzend)"},
+       {park:"Inverted Rows Füße erhöht",band:"Band Row (stärker, einarmig)"}
+     ]},
+    {id:"b_schulter_reha",tag:"Schulter-Reha · WICHTIG",repLow:15,repHigh:20,
+     tip:"Dein wichtigster Reha-Block. Nie weglassen. Leicht & sauber — nicht um jeden Preis steigern.",
+     levels:[
+       {park:"Face Pull + Außenrotation (Band)",band:"Face Pull + Außenrotation"}
+     ]},
+    {id:"b_bizeps",tag:"Bizeps · Arme #2",repLow:8,repHigh:12,
+     tip:"Ellenbogen fix. Chin-up-Negative baut Richtung Klimmzug.",
+     levels:[
+       {park:"Untergriff-Rudern (Australian Curl)",band:"Band Bizeps Curl"},
+       {park:"Chin-up-Negative (3–5 s)",band:"Band Bizeps Curl (stärker)"}
+     ]},
+    {id:"b_beine",tag:"Beine · Hinge/Lunge",repLow:10,repHigh:12,
+     tip:"RDL: Hüfte nach hinten, Rücken gerade.",
+     levels:[
+       {park:"Ausfallschritte + Glute Bridge",band:"Band RDL + Glute Bridge"},
+       {park:"Bulgarian Split Squat + Single-Leg Glute Bridge",band:"Band RDL einbeinig"}
+     ]},
+    {id:"b_core",tag:"Core · unterer Rücken",repLow:8,repHigh:12,
+     tip:"Wdh = pro Seite. Langsam, Hüfte stabil. Ab Stufe 2 zählst du Sekunden Hollow Hold.",
+     levels:[
+       {park:"Bird-Dog (pro Seite)",band:"Bird-Dog (pro Seite)"},
+       {park:"Hollow Hold (Sek. halten)",band:"Hollow Hold (Sek. halten)"}
+     ]}
   ]}
 };
 
@@ -360,7 +433,7 @@ function load(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v===nu
 function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function todayStr(){return new Date().toLocaleDateString("de-DE",{weekday:"short",day:"2-digit",month:"2-digit"})}
 
-let S={wo:"A",mode:"park",sets:2,done:{}};
+let S={wo:"A",mode:"park",sets:2,done:{},reps:{}};
 
 /* ===================== ROUTINE ===================== */
 function getDayState(){
@@ -438,36 +511,109 @@ function renderSeg(){
   document.querySelectorAll("#segMode button").forEach(b=>b.classList.toggle("on",b.dataset.mode===S.mode));
   document.querySelectorAll("[data-sets]").forEach(b=>b.classList.toggle("on",+b.dataset.sets===S.sets));
 }
+/* --- Progression engine (leistungsbasierte doppelte Progression) --- */
+function getProg(e){
+  const all=load("wkProgress",{}); let p=all[e.id];
+  if(!p){ p={levelIdx:0,targetReps:e.repLow}; all[e.id]=p; save("wkProgress",all); }
+  if(p.levelIdx>e.levels.length-1){ p.levelIdx=e.levels.length-1; }   // clamp falls levels schrumpften
+  return p;
+}
+function ensureRows(i,e){
+  const t=getProg(e).targetReps;
+  if(!S.done[i]) S.done[i]=Array(S.sets).fill(false);
+  if(!S.reps[i]) S.reps[i]=Array(S.sets).fill(t);
+  while(S.done[i].length<S.sets) S.done[i].push(false);
+  while(S.reps[i].length<S.sets) S.reps[i].push(t);
+  return {done:S.done[i],reps:S.reps[i]};
+}
+function lastTimeReps(id){
+  const h=load("wkHistory",[]);
+  for(const x of h){ if(x.ex && x.ex[id] && x.ex[id].length) return x.ex[id]; }
+  return null;
+}
+function evalProgress(e,repsPerSet){
+  const all=load("wkProgress",{}); const p=all[e.id]||{levelIdx:0,targetReps:e.repLow};
+  const logged=repsPerSet.filter(r=>r>0);
+  const success=logged.length>0 && logged.every(r=>r>=p.targetReps);
+  let note="";
+  if(success){
+    if(p.targetReps<e.repHigh){ p.targetReps++; note="↑ "+p.targetReps+" Wdh"; }
+    else if(p.levelIdx<e.levels.length-1){
+      p.levelIdx++; p.targetReps=e.repLow;
+      note="🎉 Stufe "+(p.levelIdx+1)+": "+e.levels[p.levelIdx][S.mode];
+    } else { note="🏆 Gemeistert – +1 Satz erwägen"; }
+  }
+  all[e.id]=p; save("wkProgress",all);
+  return {success,note};
+}
+function calendarPhase(){
+  const start=load("wkStartDate",null); if(!start) return null;
+  const wk=Math.floor((Date.now()-new Date(start))/6048e5)+1;   // 6048e5 = ms/Woche
+  if(wk<=2) return {wk,txt:"Wo "+wk+": 2 Sätze, locker (3–4 in Reserve)"};
+  if(wk<=4) return {wk,txt:"Wo "+wk+": 3 Sätze, 2 in Reserve"};
+  if(wk<=6) return {wk,txt:"Wo "+wk+": 3 Sätze, 4×/Woche, schwerere Varianten"};
+  if(wk<=8) return {wk,txt:"Wo "+wk+": 3–4 Sätze, Skills antesten"};
+  return {wk,txt:"Wo "+wk+": frei nach Progression"};
+}
+function renderPhaseHint(){
+  const el=document.getElementById("phaseHint"); if(!el) return;
+  const ph=calendarPhase();
+  el.innerHTML = ph ? ("📅 "+ph.txt) : 'Wiedereinstieg Wo 1–2: <b style="color:var(--txt)">2 Sätze</b>, locker.';
+}
 function renderExercises(){
   const list=document.getElementById("exList"); const ex=WORKOUTS[S.wo].ex; list.innerHTML="";
   ex.forEach((e,i)=>{
-    const arr=S.done[i]||Array(S.sets).fill(false);
-    const allDone=arr.slice(0,S.sets).every(Boolean)&&arr.length>=S.sets;
+    const {done,reps}=ensureRows(i,e); const p=getProg(e);
+    const allDone=done.slice(0,S.sets).every(Boolean);
+    const variant=e.levels[p.levelIdx][S.mode];
+    const last=lastTimeReps(e.id);
+    const lastTxt=last?("Letztes Mal: "+last.join("·")+" Wdh"):"Letztes Mal: –";
     const card=document.createElement("div"); card.className="ex"+(allDone?" done":"");
-    let setsHtml=""; for(let s=0;s<S.sets;s++){setsHtml+=`<div class="setbox ${arr[s]?'on':''}" onclick="toggleSet(${i},${s})">${arr[s]?'✓':s+1}</div>`;}
-    card.innerHTML=`<div class="tag">${e.tag}</div><h3>${S.mode==="park"?e.park:e.band}</h3>
-      <div class="desc">🎯 ${e.reps} · ${S.sets} Sätze</div><div class="sets">${setsHtml}</div>
+    let setsHtml="";
+    for(let s=0;s<S.sets;s++){ const on=done[s];
+      setsHtml+=`<div class="rep ${on?'on':''}">
+        <button class="repbtn" onclick="stepRep(${i},${s},-1)">−</button>
+        <span class="repval" onclick="markSet(${i},${s})">${reps[s]}</span>
+        <button class="repbtn" onclick="stepRep(${i},${s},1)">+</button></div>`; }
+    card.innerHTML=`<div class="row between"><span class="tag">${e.tag}</span>
+        <span class="stufe">Stufe ${p.levelIdx+1}/${e.levels.length}</span></div>
+      <h3>${variant}</h3>
+      <div class="desc">🎯 Ziel: <b style="color:var(--txt)">${p.targetReps} Wdh</b> × ${S.sets} Sätze · <span class="last">${lastTxt}</span></div>
+      <div class="sets">${setsHtml}</div>
       <div class="ex-actions"><button class="btn-accent" onclick="restFromSet()">⏱️ Pause 90 s</button><button onclick="toggleProg(${i})">ℹ️ Tipp</button></div>
-      <div class="prog" id="prog${i}">${e.prog}</div>`;
+      <div class="prog" id="prog${i}">${e.tip}</div>`;
     list.appendChild(card);
   });
 }
-function setWO(w){S.wo=w;S.done={};renderHeader();renderSeg();renderExercises();}
+function setWO(w){S.wo=w;S.done={};S.reps={};renderHeader();renderSeg();renderExercises();}
 function swapWorkout(){setWO(S.wo==="A"?"B":"A");}
 function setMode(m){S.mode=m;save("wkMode",m);renderSeg();renderExercises();}
 function setSets(n){S.sets=n;save("wkSets",n);renderSeg();renderExercises();}
-function toggleSet(i,s){
-  const arr=S.done[i]||Array(S.sets).fill(false); while(arr.length<S.sets)arr.push(false);
-  arr[s]=!arr[s]; S.done[i]=arr; renderExercises();
-  if(arr[s]){openTimer();timerMode('rest');setPreset(90);startTimer();}
+function stepRep(i,s,delta){
+  const e=WORKOUTS[S.wo].ex[i]; ensureRows(i,e);
+  S.reps[i][s]=Math.max(0,(S.reps[i][s]||0)+delta); renderExercises();
+}
+function markSet(i,s){
+  const e=WORKOUTS[S.wo].ex[i]; const {done}=ensureRows(i,e);
+  done[s]=!done[s]; renderExercises();
+  if(done[s]){openTimer();timerMode('rest');setPreset(90);startTimer();}
 }
 function toggleProg(i){document.getElementById("prog"+i).classList.toggle("show");}
 function restFromSet(){openTimer();timerMode('rest');setPreset(90);startTimer();}
 function finishWorkout(){
+  const ex=WORKOUTS[S.wo].ex; const exMap={}; const notes=[];
+  ex.forEach((e,i)=>{
+    const reps=(S.reps[i]||[]).slice(0,S.sets);
+    const done=(S.done[i]||[]).slice(0,S.sets);
+    const logged=reps.map((r,s)=>done[s]?r:0);   // nicht abgehakte Sätze = 0
+    exMap[e.id]=logged;
+    const r=evalProgress(e,logged);
+    if(r.note) notes.push(e.tag.split(" · ")[0]+": "+r.note);
+  });
   const h=load("wkHistory",[]); const d=new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"});
-  h.unshift({wo:S.wo,mode:S.mode,sets:S.sets,date:d,ts:Date.now()}); save("wkHistory",h.slice(0,60));
-  S.done={}; S.wo=suggestNext(); renderHeader();renderSeg();renderExercises(); renderHistory();
-  flash("✅ Gespeichert! Nächstes Mal: Workout "+S.wo);
+  h.unshift({wo:S.wo,mode:S.mode,sets:S.sets,date:d,ts:Date.now(),ex:exMap}); save("wkHistory",h.slice(0,60));
+  S.done={}; S.reps={}; S.wo=suggestNext(); renderHeader();renderSeg();renderExercises(); renderHistory();
+  flash(notes.length?("✅ "+notes[0]):("✅ Gespeichert! Nächstes: Workout "+S.wo));
 }
 function renderHistory(){
   const h=load("wkHistory",[]); const el=document.getElementById("histList");
@@ -523,9 +669,10 @@ function buzz(){if(navigator.vibrate)navigator.vibrate([200,100,200]);}
 
 /* ===================== INIT ===================== */
 (function init(){
+  if(load("wkStartDate",null)===null) save("wkStartDate",new Date().toISOString());  // Programmstart = heute
   S.mode=load("wkMode","park"); S.sets=load("wkSets",2); S.wo=suggestNext();
   renderRoutine(); renderMeals(); renderShop();
-  renderHeader(); renderSeg(); renderExercises(); renderHistory();
+  renderHeader(); renderSeg(); renderExercises(); renderHistory(); renderPhaseHint();
   timerMode("rest"); setPreset(90);
   if("wakeLock" in navigator){document.addEventListener("click",async()=>{try{await navigator.wakeLock.request("screen")}catch(e){}},{once:true});}
 })();
