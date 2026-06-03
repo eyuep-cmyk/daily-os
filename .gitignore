@@ -1,0 +1,15 @@
+# Personal/local reference docs — kept local, never in the public repo
+Trainingsplan_NeuStart.md
+Tagesplan_Ernaehrung_Einkauf.md
+CLAUDE.md
+
+# Claude Code workspace
+.claude/
+
+# Local tooling
+gen_icons.py
+
+# OS cruft
+Thumbs.db
+.DS_Store
+desktop.ini

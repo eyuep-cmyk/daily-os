@@ -1,0 +1,33 @@
+{
+  "name": "Eyüp · Daily OS",
+  "short_name": "Daily OS",
+  "description": "Persönliche Daily-OS-App: Tagesroutine, Training, Ernährung, Geist & Energie.",
+  "lang": "de",
+  "dir": "ltr",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0d1117",
+  "background_color": "#0d1117",
+  "start_url": "./index.html",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
