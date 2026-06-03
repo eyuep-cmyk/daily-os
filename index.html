@@ -276,7 +276,27 @@
   <!-- ===== MEHR ===== -->
   <div class="view" id="v-mehr">
     <h1>⚙️ Mehr</h1>
-    <div class="sub">Mobility, Tipps, Ernährungs-Basics & Trainingsverlauf</div>
+    <div class="sub">Gewicht, Skills, Mobility, Tipps, Backup & Trainingsverlauf</div>
+
+    <details class="card" open>
+      <summary>⚖️ Gewicht (Lean Bulk)</summary>
+      <div style="margin-top:12px">
+        <div class="row" style="gap:8px">
+          <input id="wInput" type="number" step="0.1" inputmode="decimal" placeholder="kg, z.B. 72.5" style="flex:1;background:var(--card2);border:1px solid var(--line);border-radius:11px;color:var(--txt);padding:11px;font-size:14px;font-family:inherit" onkeydown="if(event.key==='Enter')addWeight()">
+          <button class="btn-green" onclick="addWeight()" style="padding:11px 16px">+ Eintragen</button>
+        </div>
+        <div id="wStats" class="sub" style="margin:10px 0 0">–</div>
+        <div id="wHint"></div>
+        <div id="wGraph" style="margin-top:8px"></div>
+        <button class="btn-ghost" style="width:100%;color:var(--muted);margin-top:10px" onclick="resetWeight()">Gewichtsdaten löschen</button>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary>🏅 Skill-Meilensteine</summary>
+      <div class="sub" style="margin:10px 0 4px">Woran du dich hocharbeitest — abhaken, wenn geschafft.</div>
+      <div id="skillList" style="margin-top:8px"></div>
+    </details>
 
     <details class="card" open>
       <summary>🧘 Mobility (täglich 8–10 Min)</summary>
@@ -413,6 +433,14 @@ const CONDITIONING = [
   {ic:"🚶", t:"Zone-2-Cardio · 20–30 Min", d:"Zügig gehen, Rad oder Crosstrainer — so locker, dass du noch reden könntest. 1×/Woche fix.", why:"Grundlagen-Ausdauer & Herzgesundheit, ohne die Muskel-Erholung zu stören."},
   {ic:"💨", t:"Finisher · 3–5 Min (optional)", d:"Am Ende ein paar Runden 20 s zügig / 40 s locker (Bänder-Komplex oder schnelles Gehen).", why:"Kurzer Kondi-Kick — nur wenn Energie da ist, nie auf Kosten der Technik."},
   {ic:"🫁", t:"Atem-Ausdauer", d:"5 Min ruhige Nasenatmung beim lockeren Cardio, oder Box-Breathing im Geist-Tab.", why:"Bessere CO₂-Toleranz & Entspannung — kein Aufprall, schont Schulter/Rücken."}
+];
+const SKILLS = [
+  {id:"pushup20", t:"20 saubere Liegestütze (flach)", d:"Brust fast zum Boden, Körper bleibt gerade."},
+  {id:"pullup", t:"1. sauberer Klimmzug 🎯", d:"Voller Hang → Kinn über die Stange, kontrolliert."},
+  {id:"dip", t:"1. Dip schmerzfrei", d:"Kontrolliert, Schulter ohne Stechen (ab Wo 4–6)."},
+  {id:"hollow", t:"Hollow Hold 20 s", d:"Unterer Rücken am Boden, Schultern & Beine leicht an."},
+  {id:"pistol", t:"Pistol Squat (assistiert)", d:"Einbeinig runter, Festhalten zum Stützen erlaubt."},
+  {id:"lsit", t:"L-Sit 10 s", d:"An Barren oder Boden, Beine waagerecht halten."}
 ];
 const PRECALL = [
   {t:"Power-Pose · 1 Min", d:"Aufrecht, Brust raus, Hände in die Hüften, Blick hoch. Senkt Stresshormone, hebt Selbstsicherheit."},
@@ -717,6 +745,60 @@ function renderHistory(){
 }
 function resetHistory(){if(confirm("Verlauf löschen?")){save("wkHistory",[]);renderHistory();renderHeader();}}
 
+/* ===================== TRACKER (Gewicht + Skills) ===================== */
+function addWeight(){
+  const inp=document.getElementById("wInput"); const kg=parseFloat(String(inp.value).replace(",","."));
+  if(!kg||kg<=0||kg>400){ flash("Bitte gültiges Gewicht eingeben"); return; }
+  const arr=load("wkWeight",[]); const d=new Date();
+  arr.push({kg:Math.round(kg*10)/10, date:d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"}), ts:Date.now()});
+  arr.sort((a,b)=>a.ts-b.ts); save("wkWeight",arr); inp.value=""; renderWeight(); flash("⚖️ "+(Math.round(kg*10)/10)+" kg gespeichert");
+}
+function resetWeight(){ if(confirm("Alle Gewichtsdaten löschen?")){ save("wkWeight",[]); renderWeight(); } }
+function avg(a){ return a.reduce((s,e)=>s+e.kg,0)/a.length; }
+function sparkline(arr){
+  const data=arr.slice(-30); if(data.length<2) return '<div class="sub">Mind. 2 Einträge für den Graph.</div>';
+  const W=300,H=84,P=8; const ks=data.map(e=>e.kg);
+  const min=Math.min(...ks), max=Math.max(...ks), range=(max-min)||1;
+  const x=i=>P+i*(W-2*P)/(data.length-1);
+  const y=k=>H-P-((k-min)/range)*(H-2*P);
+  const pts=data.map((e,i)=>x(i).toFixed(1)+","+y(e.kg).toFixed(1)).join(" ");
+  const dots=data.map((e,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(e.kg).toFixed(1)}" r="2.6" fill="#3fb950"/>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;background:var(--card2);border:1px solid var(--line);border-radius:10px">
+    <polyline points="${pts}" fill="none" stroke="#3fb950" stroke-width="2" stroke-linejoin="round"/>${dots}
+    <text x="${P}" y="13" fill="#8b97a7" font-size="9">${max.toFixed(1)} kg</text>
+    <text x="${P}" y="${H-4}" fill="#8b97a7" font-size="9">${min.toFixed(1)} kg</text></svg>`;
+}
+function renderWeight(){
+  const arr=load("wkWeight",[]); const stats=document.getElementById("wStats");
+  const hint=document.getElementById("wHint"); const g=document.getElementById("wGraph");
+  if(!stats) return;
+  if(!arr.length){ stats.textContent="Noch kein Gewicht eingetragen."; hint.innerHTML=""; g.innerHTML=""; return; }
+  const now=Date.now(), wk=6048e5, last=arr[arr.length-1];
+  const last7=arr.filter(e=>now-e.ts<=wk), prev7=arr.filter(e=>now-e.ts>wk && now-e.ts<=2*wk);
+  const avg7=avg(last7); let trendTxt="";
+  if(prev7.length){ const diff=avg7-avg(prev7); trendTxt=" · Trend "+(diff>=0?"+":"")+diff.toFixed(1)+" kg/Wo"; }
+  stats.innerHTML=`Aktuell: <b style="color:var(--txt)">${last.kg} kg</b> · Ø7T: ${avg7.toFixed(1)} kg${trendTxt}`;
+  // Stagnation: >=12 Tage Daten und letzte 2 Wochen quasi flach
+  const span=(now-arr[0].ts)/864e5;
+  let stagn=false;
+  if(prev7.length && span>=12){ stagn=Math.abs(avg7-avg(prev7))<0.2; }
+  hint.innerHTML = stagn
+    ? '<div class="warnbox" style="margin:10px 0 0">⚖️ Gewicht steht ~2 Wochen → <b>+1 Portion Carbs/Tag</b> (Reis, Hafer, Kartoffeln). Lean Bulk braucht den Überschuss.</div>'
+    : "";
+  g.innerHTML=sparkline(arr);
+}
+function renderSkills(){
+  const done=load("wkSkills",{}); const l=document.getElementById("skillList"); if(!l) return; l.innerHTML="";
+  SKILLS.forEach(s=>{
+    const on=!!done[s.id];
+    const el=document.createElement("div"); el.className="step"+(on?" done":""); el.style.marginBottom="8px";
+    el.onclick=()=>toggleSkill(s.id);
+    el.innerHTML=`<div class="chk">${on?"✓":""}</div><div class="stxt"><h3 style="font-size:14px">${s.t}</h3><div class="d">${s.d}</div></div>`;
+    l.appendChild(el);
+  });
+}
+function toggleSkill(id){ const d=load("wkSkills",{}); d[id]=!d[id]; save("wkSkills",d); renderSkills(); if(d[id])flash("🏅 Meilenstein erreicht!"); }
+
 /* ===================== CONDITIONING ===================== */
 function renderConditioning(){
   const l=document.getElementById("condList"); l.innerHTML="";
@@ -851,6 +933,7 @@ function buzz(){if(navigator.vibrate)navigator.vibrate([200,100,200]);}
   renderRoutine(); renderMeals(); renderShop();
   renderHeader(); renderSeg(); renderExercises(); renderHistory(); renderPhaseHint();
   renderPrecall(); renderReframes(); renderObjections(); renderWins(); renderConditioning();
+  renderWeight(); renderSkills();
   timerMode("rest"); setPreset(90);
   if("wakeLock" in navigator){document.addEventListener("click",async()=>{try{await navigator.wakeLock.request("screen")}catch(e){}},{once:true});}
 })();
