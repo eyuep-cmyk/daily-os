@@ -340,6 +340,16 @@
     </details>
 
     <details class="card">
+      <summary>💾 Backup (Export / Import)</summary>
+      <div style="margin-top:12px">
+        <div class="sub" style="margin:0 0 10px">Alle Daten als JSON sichern oder auf einem neuen Gerät wiederherstellen. Läuft komplett offline.</div>
+        <button class="btn-accent" style="width:100%;margin-bottom:8px" onclick="exportData()">⬇️ Export — JSON sichern</button>
+        <input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="importData(event)">
+        <button class="btn-ghost" style="width:100%" onclick="document.getElementById('importFile').click()">⬆️ Import — JSON laden</button>
+      </div>
+    </details>
+
+    <details class="card">
       <summary>📈 Trainingsverlauf</summary>
       <div id="histList" style="margin-top:12px"><div class="sub">Noch keine Einträge.</div></div>
       <button class="btn-ghost" style="width:100%;color:var(--muted);margin-top:8px" onclick="resetHistory()">Verlauf löschen</button>
@@ -744,6 +754,30 @@ function renderHistory(){
   el.innerHTML=h.map(x=>`<div class="hist"><b>${x.date}</b> · Workout ${x.wo} · ${x.mode==="park"?"☀️ Park":"🌧️ Bänder"} · ${x.sets} Sätze</div>`).join("");
 }
 function resetHistory(){if(confirm("Verlauf löschen?")){save("wkHistory",[]);renderHistory();renderHeader();}}
+
+/* ===================== BACKUP (Export / Import) ===================== */
+const BACKUP_KEYS=["dayState","wkHistory","wkMode","wkSets","wkProgress","wkStartDate","wkWeight","wkSkills","wkWins","shopChecked"];
+function exportData(){
+  const data={_app:"DailyOS",_v:1,_exported:new Date().toISOString()};
+  BACKUP_KEYS.forEach(k=>{ const v=localStorage.getItem(k); if(v!==null){ try{data[k]=JSON.parse(v);}catch(e){} } });
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob); const a=document.createElement("a");
+  a.href=url; a.download="dailyos-backup-"+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},100); flash("💾 Backup exportiert");
+}
+function importData(ev){
+  const f=ev.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    let data; try{ data=JSON.parse(r.result); }catch(e){ flash("❌ Ungültige Backup-Datei"); ev.target.value=""; return; }
+    if(typeof data!=="object"||data===null){ flash("❌ Ungültige Backup-Datei"); ev.target.value=""; return; }
+    if(!confirm("Backup importieren? Deine aktuellen lokalen Daten werden überschrieben.")){ ev.target.value=""; return; }
+    BACKUP_KEYS.forEach(k=>{ if(k in data) save(k,data[k]); });
+    flash("✅ Import erfolgreich – lädt neu …"); setTimeout(()=>location.reload(),700);
+  };
+  r.readAsText(f);
+}
 
 /* ===================== TRACKER (Gewicht + Skills) ===================== */
 function addWeight(){
