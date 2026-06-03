@@ -100,6 +100,25 @@
     padding:11px 13px;font-size:13px;line-height:1.5;color:#ffd98a;margin-bottom:12px}
   .hist{font-size:13px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--line)}
   .hist b{color:var(--txt)}
+  /* geist */
+  .breath{margin-top:14px;display:flex;flex-direction:column;align-items:center}
+  .breath-circle{width:150px;height:150px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle,rgba(163,113,247,.25),rgba(163,113,247,.05));border:2px solid var(--purple);
+    color:var(--txt);font-weight:700;font-size:15px;text-align:center;transition:transform 4s ease-in-out,background .4s;transform:scale(.62)}
+  .breath-circle.in{transform:scale(1)}
+  .breath-circle.hold{transform:scale(1)}
+  .breath-circle.out{transform:scale(.62)}
+  .breath-circle b{display:block;font-size:30px;font-variant-numeric:tabular-nums}
+  .reframe{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin-bottom:8px;
+    font-size:14px;line-height:1.45;cursor:pointer;transition:.15s}
+  .reframe.on{border-color:var(--purple);background:rgba(163,113,247,.12);color:#d7c4ff}
+  .obj{border-bottom:1px solid var(--line);padding:11px 0}
+  .obj:last-child{border:none}
+  .obj .q{font-weight:700;font-size:14px;color:var(--warn);margin-bottom:5px}
+  .obj .a{font-size:13.5px;color:var(--muted);line-height:1.5}
+  .win{display:flex;gap:10px;align-items:flex-start;font-size:14px;padding:8px 0;border-bottom:1px solid var(--line);line-height:1.45}
+  .win:last-child{border:none}
+  .win .x{color:var(--muted);cursor:pointer;flex:0 0 auto;font-size:13px}
   details.card summary{font-weight:700;font-size:15px;cursor:pointer;list-style:none}
   details.card summary::-webkit-details-marker{display:none}
   details.card summary::after{content:" ▾";color:var(--muted)}
@@ -187,6 +206,44 @@
     </details>
     <div id="exList"></div>
     <button class="btn-green" style="width:100%;padding:15px;font-size:15px" onclick="finishWorkout()">✅ Workout abschließen & speichern</button>
+  </div>
+
+  <!-- ===== GEIST ===== -->
+  <div class="view" id="v-geist">
+    <h1>🧠 Geist & Auftreten</h1>
+    <div class="sub">Selbstbewusst ins Kundengespräch — vorbereiten, umdeuten, kontern, feiern.</div>
+
+    <div class="card">
+      <h3 style="margin:0 0 4px">📞 Vor dem Kundengespräch</h3>
+      <div class="sub" style="margin:0 0 10px">Der Reihe nach — 3 Minuten, dann gehst du ruhig rein.</div>
+      <div id="precallList"></div>
+      <div class="breath" id="breathWrap">
+        <div class="breath-circle" id="breathCircle"><span id="breathTxt">Box-Breathing</span></div>
+        <button class="btn-accent" id="breathBtn" style="width:100%;margin-top:12px" onclick="toggleBreath()">🫁 Box-Breathing starten (4-4-4-4 · 4 Runden)</button>
+        <div class="sub" style="text-align:center;margin:8px 0 0">Beruhigt das Nervensystem · senkt den Puls vor dem Call.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 4px">🔄 Reframes</h3>
+      <div class="sub" style="margin:0 0 10px">Nervös? Tippe eine Karte an und nimm den Gedanken mit rein.</div>
+      <div id="reframeList"></div>
+    </div>
+
+    <details class="card">
+      <summary>🛡️ Einwände souverän kontern</summary>
+      <div id="objList" style="margin-top:12px"></div>
+    </details>
+
+    <div class="card">
+      <h3 style="margin:0 0 4px">🏆 Wins heute</h3>
+      <div class="sub" style="margin:0 0 10px">3 Erfolge pro Tag — auch kleine zählen. Baut echtes Selbstbewusstsein.</div>
+      <div class="row" style="gap:8px">
+        <input id="winInput" placeholder="z.B. Anruf trotz Nervosität gemacht" style="flex:1;background:var(--card2);border:1px solid var(--line);border-radius:11px;color:var(--txt);padding:11px;font-size:14px;font-family:inherit" onkeydown="if(event.key==='Enter')addWin()">
+        <button class="btn-green" onclick="addWin()" style="padding:11px 16px">+</button>
+      </div>
+      <div id="winList" style="margin-top:12px"></div>
+    </div>
   </div>
 
   <!-- ===== ESSEN ===== -->
@@ -292,6 +349,7 @@
 <div class="tabs">
   <button class="on" data-v="tag" onclick="showView('tag',this)"><span class="ic">🌅</span>Tag</button>
   <button data-v="workout" onclick="showView('workout',this)"><span class="ic">🏋️</span>Training</button>
+  <button data-v="geist" onclick="showView('geist',this)"><span class="ic">🧠</span>Geist</button>
   <button data-v="essen" onclick="showView('essen',this)"><span class="ic">🍽️</span>Essen</button>
   <button data-v="einkauf" onclick="showView('einkauf',this)"><span class="ic">🛒</span>Einkauf</button>
   <button data-v="mehr" onclick="showView('mehr',this)"><span class="ic">⚙️</span>Mehr</button>
@@ -304,12 +362,14 @@ const ROUTINE = [
   {id:"r2", t:"Mundhygiene", ic:"🪥", d:"Zähne + Zunge reinigen — VOR dem ersten Schluck Wasser."},
   {id:"r3", t:"Wasser mit Zitrone/Limette + Prise Salz", ic:"💧", d:"Rehydrieren nach der Nacht, Elektrolyte. Erst jetzt, nach der Mundhygiene."},
   {id:"r4", t:"Dehnen / Mobility", ic:"🧘", d:"5–10 Min. Schulter + unterer Rücken zuerst.", jump:["mehr","Mobility öffnen"]},
+  {id:"r_mind", t:"Morgen-Mindset", ic:"🧠", d:"Kurz: 1 Win von gestern + heutiges Hauptziel laut sagen. Tag bewusst starten.", jump:["geist","Geist öffnen"]},
   {id:"r5", t:"Energie-Shake / kleine Mahlzeit", ic:"🥤", d:"Leicht & schnell verfügbar – Energie fürs Training.", jump:["essen","Rezept ansehen"]},
   {id:"r6", t:"Morgen-Supplements (mit dem Essen)", ic:"💊", d:"Nicht nüchtern – immer mit dem Shake/Essen einnehmen.",
     supps:["D3 + K2","Vitamin C","B-Komplex","Kreatin 5 g","Probaflor (Probiotikum)"]},
   {id:"r7", t:"Training", ic:"🏋️", d:"Zur Zeit, wo deine Energie am höchsten ist.", jump:["workout","Workout öffnen"]},
   {id:"r8", t:"Post-Workout Mahlzeit kochen & essen", ic:"🍳", d:"Protein + Carbs direkt nach dem Training = Aufbau.", jump:["essen","Rezept ansehen"]},
   {id:"r9", t:"Deep Work – KI-Business", ic:"💻", d:"Fokus-Block ohne Ablenkung. Wichtigste Aufgabe zuerst."},
+  {id:"r_precall", t:"Vor Kundengespräch: Pre-Call-Routine", ic:"📞", d:"Nur an Gesprächstagen: Power-Pose, Box-Breathing, Reframe — dann ruhig rein.", jump:["geist","Pre-Call öffnen"]},
   {id:"r10", t:"Abend-Supplements", ic:"🌙", d:"Für Schlaf & Recovery, ~30–60 Min vor dem Bett.",
     supps:["Ashwagandha KSM-66","Magnesium Citrat"]},
   {id:"r11", t:"Schlafvorbereitung", ic:"📖", d:"Screens runter, Lesen, Notizen schreiben, runterkommen."}
@@ -343,6 +403,31 @@ const SHOP = {
   "Fette & Nüsse":["Olivenöl","Kokosöl","Mandel-/Erdnussmus","Nüsse / Mandeln"],
   "Gewürze & Sonstiges":["Meersalz","Pfeffer","Zimt","Kurkuma","Ingwer","Honig"]
 };
+
+const PRECALL = [
+  {t:"Power-Pose · 1 Min", d:"Aufrecht, Brust raus, Hände in die Hüften, Blick hoch. Senkt Stresshormone, hebt Selbstsicherheit."},
+  {t:"Box-Breathing · 4-4-4-4", d:"4 Runden mit dem Kreis unten. Puls runter, Kopf klar."},
+  {t:"Ziel laut sagen", d:"Ein Satz: „Ich helfe ihm, [Problem] mit KI zu lösen.\" Laut, nicht nur gedacht."},
+  {t:"1 Reframe ziehen", d:"Tippe unten eine Reframe-Karte an und nimm den Gedanken mit rein."},
+  {t:"Locker machen", d:"Schultern lockern, Wasser trinken, einmal lächeln. Energie statt Anspannung."}
+];
+const REFRAMES = [
+  "Aufregung = Energie, nicht Angst. Gleicher Körper, andere Deutung.",
+  "Ich verkaufe nichts — ich löse ein Problem.",
+  "Der Kunde WILL, dass es klappt. Er sucht eine Lösung, kein Duell.",
+  "Ich muss nicht perfekt sein. Ehrlich + hilfreich schlägt glatt.",
+  "Ein Nein ist Information, kein Urteil über mich.",
+  "Ich bin der KI-Experte — genau deshalb sitzt er mir gegenüber.",
+  "Ruhe gewinnt. Ich rede langsam und lasse Pausen stehen."
+];
+const OBJECTIONS = [
+  {q:"„Das ist zu teuer.\"", a:"Verstehe. Lass uns kurz rechnen, was [die Aufgabe] Sie aktuell an Zeit/Geld kostet — meist zahlt sich die Lösung in [X] zurück. Worauf käme es Ihnen an, damit sich die Investition für Sie lohnt?"},
+  {q:"„Das brauchen wir (noch) nicht.\"", a:"Klar, dann drängt nichts. Viele merken den Bedarf erst beim nächsten Engpass. Wäre es okay, wenn ich Ihnen in 5 Minuten zeige, wo es bei Ihnen konkret greifen würde — und Sie entscheiden dann?"},
+  {q:"„Ich kenne euch nicht — kein Vertrauen.\"", a:"Absolut fair. Deshalb starten wir klein: ein klar abgegrenzter Pilot mit messbarem Ergebnis. Sie sehen, dass es liefert, bevor wir größer denken."},
+  {q:"„Keine Zeit gerade.\"", a:"Genau deshalb melde ich mich — das Ziel ist, Ihnen Zeit zurückzugeben. Reichen 10 Minuten nächste Woche, damit Sie es kurz bewerten können?"},
+  {q:"„Macht das nicht ChatGPT umsonst?\"", a:"Tools gibt's viele — der Unterschied ist die Einbindung in IHRE Abläufe, sodass es zuverlässig und ohne Fehler läuft. Genau diese Arbeit nehme ich Ihnen ab."},
+  {q:"„Ich muss darüber nachdenken.\"", a:"Sehr gut, soll man auch. Was genau wollen Sie noch abwägen — Kosten, Aufwand oder das Ergebnis? Dann gebe ich Ihnen gezielt die Info, die Ihnen die Entscheidung leicht macht."}
+];
 
 /* Jede Übung: id (stabiler Key), tag, repLow/repHigh (Spanne), tip, levels = aufsteigende
    Schwierigkeits-Leiter [{park,band},...]. Doppelte Progression läuft über levels + Wdh. */
@@ -622,6 +707,77 @@ function renderHistory(){
 }
 function resetHistory(){if(confirm("Verlauf löschen?")){save("wkHistory",[]);renderHistory();renderHeader();}}
 
+/* ===================== GEIST ===================== */
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+let precallDone={}, reframeOn={};
+function renderPrecall(){
+  const l=document.getElementById("precallList"); l.innerHTML="";
+  PRECALL.forEach((p,i)=>{
+    const on=!!precallDone[i];
+    const el=document.createElement("div"); el.className="step"+(on?" done":""); el.style.marginBottom="8px";
+    el.onclick=()=>{precallDone[i]=!precallDone[i];renderPrecall();};
+    el.innerHTML=`<div class="chk">${on?"✓":""}</div><div class="stxt"><h3 style="font-size:14px">${i+1}. ${p.t}</h3><div class="d">${p.d}</div></div>`;
+    l.appendChild(el);
+  });
+}
+function renderReframes(){
+  const l=document.getElementById("reframeList"); l.innerHTML="";
+  REFRAMES.forEach((r,i)=>{
+    const el=document.createElement("div"); el.className="reframe"+(reframeOn[i]?" on":"");
+    el.textContent=r; el.onclick=()=>{reframeOn[i]=!reframeOn[i];renderReframes();};
+    l.appendChild(el);
+  });
+}
+function renderObjections(){
+  const l=document.getElementById("objList"); l.innerHTML="";
+  OBJECTIONS.forEach(o=>{
+    const el=document.createElement("div"); el.className="obj";
+    el.innerHTML=`<div class="q">${o.q}</div><div class="a">${o.a}</div>`;
+    l.appendChild(el);
+  });
+}
+function addWin(){
+  const inp=document.getElementById("winInput"); const v=inp.value.trim(); if(!v)return;
+  const w=load("wkWins",{}); const k=todayStr(); (w[k]=w[k]||[]).push(v); save("wkWins",w);
+  inp.value=""; renderWins(); flash("🏆 Win gespeichert");
+}
+function removeWin(k,i){
+  const w=load("wkWins",{}); if(w[k]){ w[k].splice(i,1); if(!w[k].length)delete w[k]; save("wkWins",w); } renderWins();
+}
+function renderWins(){
+  const w=load("wkWins",{}); const el=document.getElementById("winList"); const k=todayStr();
+  const days=Object.keys(w); if(!days.length){ el.innerHTML='<div class="sub">Noch keine Wins. Trag deinen ersten ein 👆</div>'; return; }
+  const order=[k,...days.filter(d=>d!==k)]; let html="";
+  order.forEach(d=>{ if(!w[d]||!w[d].length)return;
+    html+=`<div class="shopcat" style="margin:12px 0 4px">${d===k?"Heute":d} · ${w[d].length}/3</div>`;
+    w[d].forEach((x,i)=>{ html+=`<div class="win"><span style="flex:1">🏆 ${esc(x)}</span><span class="x" onclick="removeWin('${d}',${i})">✕</span></div>`; });
+  });
+  el.innerHTML=html;
+}
+/* Box-Breathing 4-4-4-4 · 4 Runden (nutzt buzz() aus dem Timer-System) */
+let BR={running:false,iv:null,t:0};
+const BR_PHASES=[{n:"Einatmen",c:"in"},{n:"Halten",c:"hold"},{n:"Ausatmen",c:"out"},{n:"Halten",c:"out"}];
+function toggleBreath(){ BR.running?stopBreath(false):startBreath(); }
+function startBreath(){
+  BR.running=true; BR.t=0; document.getElementById("breathBtn").textContent="⏹ Stopp";
+  breathTick(); BR.iv=setInterval(()=>{ BR.t++; if(BR.t>=64){stopBreath(true);return;} breathTick(); },1000);
+}
+function breathTick(){
+  const inRound=BR.t%16, round=Math.floor(BR.t/16);
+  const ph=BR_PHASES[Math.floor(inRound/4)], sec=4-(inRound%4);
+  const c=document.getElementById("breathCircle");
+  c.className="breath-circle "+ph.c;
+  c.innerHTML=ph.n+"<b>"+sec+"</b>Runde "+(round+1)+"/4";
+  if(inRound%4===0 && navigator.vibrate) navigator.vibrate(50);
+}
+function stopBreath(done){
+  if(BR.iv){clearInterval(BR.iv);BR.iv=null;} BR.running=false;
+  document.getElementById("breathBtn").textContent="🫁 Box-Breathing starten (4-4-4-4 · 4 Runden)";
+  const c=document.getElementById("breathCircle"); c.className="breath-circle";
+  c.innerHTML=done?"Stark! 💪":"Box-Breathing";
+  if(done && navigator.vibrate) navigator.vibrate([100,60,100]);
+}
+
 /* ===================== UI ===================== */
 function flash(msg){
   const d=document.createElement("div"); d.textContent=msg;
@@ -629,6 +785,7 @@ function flash(msg){
   document.body.appendChild(d); setTimeout(()=>{d.style.transition=".4s";d.style.opacity="0";setTimeout(()=>d.remove(),400);},1900);
 }
 function showView(v,btn){
+  if(v!=="geist" && BR.running) stopBreath(false);
   document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
   document.getElementById("v-"+v).classList.add("on");
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("on"));
@@ -673,6 +830,7 @@ function buzz(){if(navigator.vibrate)navigator.vibrate([200,100,200]);}
   S.mode=load("wkMode","park"); S.sets=load("wkSets",2); S.wo=suggestNext();
   renderRoutine(); renderMeals(); renderShop();
   renderHeader(); renderSeg(); renderExercises(); renderHistory(); renderPhaseHint();
+  renderPrecall(); renderReframes(); renderObjections(); renderWins();
   timerMode("rest"); setPreset(90);
   if("wakeLock" in navigator){document.addEventListener("click",async()=>{try{await navigator.wakeLock.request("screen")}catch(e){}},{once:true});}
 })();
