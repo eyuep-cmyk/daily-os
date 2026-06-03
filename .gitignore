@@ -13,3 +13,7 @@ gen_icons.py
 Thumbs.db
 .DS_Store
 desktop.ini
+
+# temp test scaffolding
+_t.js
+_c.js
