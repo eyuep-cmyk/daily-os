@@ -382,6 +382,12 @@
     <button onclick="setPreset(90)">90 s</button>
     <button onclick="setPreset(120)">120 s</button>
   </div>
+  <div class="presets" id="holdpresets" style="display:none">
+    <button onclick="setPreset(20)">20 s</button>
+    <button onclick="setPreset(30)">30 s</button>
+    <button onclick="setPreset(45)">45 s</button>
+    <button onclick="setPreset(60)">60 s</button>
+  </div>
   <div class="tctrl">
     <button class="btn-green" id="tStart" onclick="toggleTimer()">▶ Start</button>
     <button onclick="resetTimer()">↺ Reset</button>
@@ -707,8 +713,9 @@ function renderExercises(){
     const {done,reps}=ensureRows(i,e); const p=getProg(e);
     const allDone=done.slice(0,S.sets).every(Boolean);
     const variant=e.levels[p.levelIdx][S.mode];
+    const isHold=/Hold|Hang|Halten|Stütz|Dehn/i.test(variant);   // Halteübung → Belastungs-Timer anbieten
     const last=lastTimeReps(e.id);
-    const lastTxt=last?("Letztes Mal: "+last.join("·")+" Wdh"):"Letztes Mal: –";
+    const lastTxt=last?("Letztes Mal: "+last.join("·")+(isHold?" s":" Wdh")):"Letztes Mal: –";
     const card=document.createElement("div"); card.className="ex"+(allDone?" done":"");
     let setsHtml="";
     for(let s=0;s<S.sets;s++){ const on=done[s];
@@ -721,7 +728,7 @@ function renderExercises(){
       <h3>${variant}</h3>
       <div class="desc">🎯 Ziel: <b style="color:var(--txt)">${p.targetReps} Wdh</b> × ${S.sets} Sätze · <span class="last">${lastTxt}</span></div>
       <div class="sets">${setsHtml}</div>
-      <div class="ex-actions"><button class="btn-accent" onclick="restFromSet()">⏱️ Pause 90 s</button><button onclick="toggleProg(${i})">ℹ️ Tipp</button></div>
+      <div class="ex-actions"><button class="btn-accent" onclick="restFromSet()">⏱️ Pause 90 s</button>${isHold?`<button onclick="startHold(30)">⏳ Halten 30 s</button>`:""}<button onclick="toggleProg(${i})">ℹ️ Tipp</button></div>
       <div class="prog" id="prog${i}">${e.tip}</div>`;
     list.appendChild(card);
   });
@@ -937,26 +944,37 @@ function showView(v,btn){
 }
 
 /* ===================== TIMER ===================== */
-let T={mode:"rest",running:false,value:90,base:90,iv:null};
+let T={mode:"rest",kind:"pause",running:false,value:90,base:90,iv:null};
 function openTimer(){document.getElementById("tsheet").classList.add("up");document.getElementById("tback").classList.add("show");}
 function closeTimer(){document.getElementById("tsheet").classList.remove("up");document.getElementById("tback").classList.remove("show");}
 function fmt(s){const m=Math.floor(s/60),x=s%60;return String(m).padStart(2,"0")+":"+String(x).padStart(2,"0");}
 function renderTimer(){const d=document.getElementById("tdisp");d.textContent=fmt(T.value);d.className="tdisplay "+(T.mode==="rest"?"rest":"up");}
+function updateTimerUI(){
+  const rest=T.mode==="rest", hold=rest&&T.kind==="hold";
+  document.getElementById("presets").style.display=(rest&&!hold)?"flex":"none";
+  document.getElementById("holdpresets").style.display=hold?"flex":"none";
+  document.getElementById("tlabel").textContent=!rest?"Stoppuhr (Halteübungen/Dehnungen)":(hold?"Halte-Timer (Übung)":"Pausen-Countdown");
+}
 function timerMode(m){
-  stopTick();T.mode=m;T.running=false;
+  stopTick();T.mode=m;T.running=false; if(m==="rest")T.kind="pause";
   document.getElementById("tmRest").classList.toggle("on",m==="rest");
   document.getElementById("tmUp").classList.toggle("on",m==="up");
-  document.getElementById("presets").style.display=m==="rest"?"flex":"none";
-  document.getElementById("tlabel").textContent=m==="rest"?"Pausen-Countdown":"Stoppuhr (Halteübungen/Dehnungen)";
+  updateTimerUI();
   T.value=m==="rest"?T.base:0; document.getElementById("tStart").textContent="▶ Start"; renderTimer();
 }
+function startHold(sec){
+  openTimer(); stopTick(); T.mode="rest"; T.kind="hold"; T.running=false;
+  document.getElementById("tmRest").classList.add("on"); document.getElementById("tmUp").classList.remove("on");
+  T.base=sec; updateTimerUI();
+  setPreset(sec); document.getElementById("tStart").textContent="▶ Start"; renderTimer(); startTimer();
+}
 function setPreset(s){T.base=s;if(!T.running){T.value=s;renderTimer();}
-  document.querySelectorAll("#presets button").forEach(b=>b.classList.toggle("on",b.textContent===s+" s"));}
+  document.querySelectorAll("#presets button, #holdpresets button").forEach(b=>b.classList.toggle("on",b.textContent===s+" s"));}
 function toggleTimer(){T.running?pauseTimer():startTimer();}
 function startTimer(){
   if(T.running)return; openTimer(); T.running=true; document.getElementById("tStart").textContent="⏸ Pause";
   T.iv=setInterval(()=>{
-    if(T.mode==="rest"){T.value--; if(T.value<=0){T.value=0;renderTimer();beep();buzz();stopTick();T.running=false;document.getElementById("tStart").textContent="▶ Start";flash("⏰ Pause vorbei – nächster Satz!");return;}
+    if(T.mode==="rest"){T.value--; if(T.value<=0){T.value=0;renderTimer();beep();buzz();stopTick();T.running=false;document.getElementById("tStart").textContent="▶ Start";flash(T.kind==="hold"?"✅ Halten geschafft!":"⏰ Pause vorbei – nächster Satz!");return;}
       if(T.value<=3){beepTick(); if(sndOn()&&navigator.vibrate)navigator.vibrate(60);}}
     else{T.value++;}
     if(T.value>0 && T.value%30===0){beepShort(); if(sndOn()&&navigator.vibrate)navigator.vibrate(120);}
