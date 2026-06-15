@@ -1,0 +1,9 @@
+# Treat media as binary — never apply CRLF/text conversion
+*.gif binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+*.avif binary
+*.mp4 binary
+*.ico binary

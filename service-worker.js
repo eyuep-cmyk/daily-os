@@ -5,7 +5,7 @@
  *  - static assets (icons, manifest): CACHE-FIRST (fast, rarely change).
  * Bump CACHE on every release to bust old caches.
  */
-const CACHE = "daily-os-v4";
+const CACHE = "daily-os-v5";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -14,10 +14,21 @@ const APP_SHELL = [
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png"
 ];
+// Übungs-Medien (für Offline + garantierte Verfügbarkeit). Best-effort: ein fehlendes File darf die Installation nicht killen.
+const MEDIA = [
+  "./media/b_ruecken_vert.jpg",
+  "./media/a_brust.gif",
+  "./media/a_beine.jpg",
+  "./media/a_core.gif",
+  "./media/a_rotation.jpg",
+  "./media/b_core.gif"
+];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(APP_SHELL)).then(() => self.skipWaiting())
+    caches.open(CACHE)
+      .then((c) => c.addAll(APP_SHELL).then(() => Promise.allSettled(MEDIA.map((u) => c.add(u)))))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -30,8 +41,9 @@ self.addEventListener("activate", (e) => {
 });
 
 function isHTML(req) {
-  return req.mode === "navigate" ||
-    (req.method === "GET" && req.headers.get("accept") || "").includes("text/html");
+  if (req.mode === "navigate") return true;
+  const accept = req.headers.get("accept") || "";
+  return req.method === "GET" && accept.includes("text/html");
 }
 
 self.addEventListener("fetch", (e) => {
