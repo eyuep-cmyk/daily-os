@@ -83,6 +83,43 @@
   .ex-actions{display:flex;gap:8px;flex-wrap:wrap}.ex-actions button{flex:1 1 auto;min-width:84px;padding:9px;font-size:13px}
   .prog{font-size:12.5px;color:var(--blue);background:rgba(56,139,253,.08);border-radius:10px;padding:8px 10px;margin-top:8px;display:none;line-height:1.5}
   .prog.show{display:block}
+  /* training player (Bend-Style) */
+  .ov-title{font-size:13px;color:var(--muted);margin-bottom:10px}
+  .ov-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .ov-item{flex:0 0 auto;width:86px;text-align:center}
+  .ov-thumb{width:64px;height:64px;border-radius:12px;object-fit:cover;border:1px solid var(--line);background:var(--card2);display:block;margin:0 auto}
+  .ov-emoji{width:64px;height:64px;border-radius:12px;border:1px solid var(--line);background:var(--card2);display:inline-flex;align-items:center;justify-content:center;font-size:30px}
+  .ov-nm{display:block;font-size:11px;color:var(--muted);margin-top:5px;line-height:1.3}
+  .pl-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .pl-x{background:var(--card2);border:1px solid var(--line);color:var(--muted);width:34px;height:34px;border-radius:9px;font-size:15px;flex-shrink:0}
+  .pl-prog{font-size:13px;color:var(--muted);flex:1}
+  .pl-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:120px;justify-content:flex-end}
+  .pl-dot{width:7px;height:7px;border-radius:50%;background:var(--line)}
+  .pl-dot.on{background:var(--accent);transform:scale(1.3)}
+  .pl-dot.done{background:var(--accent2)}
+  .pl-media{display:flex;align-items:center;justify-content:center;background:var(--card2);border:1px solid var(--line);border-radius:16px;min-height:200px;margin-bottom:12px;overflow:hidden}
+  .pl-media-el{width:100%;max-height:300px;object-fit:contain;display:block}
+  .pl-emoji{font-size:96px;line-height:1.6}
+  .pl-tag{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  .pl-name{margin:3px 0 8px;font-size:22px;line-height:1.2}
+  .pl-target{font-size:14px;color:var(--muted);margin-bottom:14px}
+  .pl-stepper{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:14px}
+  .pl-stepper button{width:54px;height:54px;border-radius:14px;background:var(--card2);border:1.5px solid var(--line);font-size:26px;color:var(--txt)}
+  .pl-stepper span{font-size:34px;font-weight:800;min-width:64px;text-align:center;font-variant-numeric:tabular-nums}
+  .pl-primary{width:100%;padding:16px;font-size:16px;margin-bottom:10px}
+  .pl-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .pl-actions button{flex:1 1 auto;min-width:96px;padding:10px;font-size:13px}
+  .pl-tipbox{font-size:12.5px;color:var(--blue);background:rgba(56,139,253,.08);border-radius:10px;padding:9px 11px;margin-bottom:10px;line-height:1.5}
+  .pl-next{font-size:13px;color:var(--muted);background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+  .pl-next .ov-thumb,.pl-next .ov-emoji{width:40px;height:40px;font-size:22px;flex-shrink:0}
+  .pl-back{width:100%;margin-top:10px;background:transparent;border:none;color:var(--muted);font-size:13px;padding:8px}
+  .pl-rest{text-align:center;padding:24px 0}
+  .pl-rlabel{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .pl-count{font-size:64px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent2);margin:6px 0 16px}
+  .pl-restbtns{display:flex;gap:10px;justify-content:center}
+  .pl-restbtns button{padding:12px 20px;font-size:14px}
+  .pl-nextbig{margin-top:18px;display:flex;align-items:center;gap:12px;justify-content:center;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:14px;font-size:13px;color:var(--muted)}
+  .pl-nextbig .ov-thumb,.pl-nextbig .ov-emoji{width:54px;height:54px;font-size:32px;flex-shrink:0}
   /* meals */
   .meal h3{margin:0 0 2px}
   .meal .when{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);font-weight:700}
@@ -172,6 +209,9 @@
 
   <!-- ===== TRAINING ===== -->
   <div class="view" id="v-workout">
+
+   <!-- SETUP / Start-Übersicht -->
+   <div id="wkSetup">
     <div class="row between">
       <h1>🏋️ Heute dran:</h1><span class="badge" id="todayBadge">A</span>
     </div>
@@ -202,6 +242,8 @@
       </div>
       <div class="sub" style="margin:8px 0 0" id="phaseHint">Wiedereinstieg Wo 1–2: <b style="color:var(--txt)">2 Sätze</b>, locker.</div>
     </div>
+    <div class="card" id="todayOverview"></div>
+    <button class="btn-green" style="width:100%;padding:16px;font-size:16px;margin-bottom:12px" onclick="startSession()">▶ Training starten</button>
     <div class="warnbox" style="margin-bottom:12px">🛡️ <b>2 Schutzregeln:</b> <b>Schulter rechts</b> — nur im schmerzfreien Bereich, KEIN Pike/Überkopf-Drücken & keine tiefen Dips solange symptomatisch; Fokus Rudern + Band-Außenrotation. <b>Unterer Rücken</b> — Anti-Extensions-Core (Dead Bug, Bird-Dog), kein Schwung-Beinheben, keine Überstreckung. Knacken ohne Schmerz = meist ok.</div>
     <details class="card">
       <summary>🔥 Warm-up & Mobility (10–15 Min · jedes Training)</summary>
@@ -213,13 +255,16 @@
         <b style="color:var(--accent);display:inline-block;margin-top:8px">5. Spezifisch</b><br>• 1 leichter Satz der leichteren Progression vor der 1. Hauptübung
       </div>
     </details>
-    <div id="exList"></div>
-    <button class="btn-green" style="width:100%;padding:15px;font-size:15px" onclick="finishWorkout()">✅ Workout abschließen & speichern</button>
     <details class="card" style="margin-top:12px">
       <summary>🏃 Ausdauer / Conditioning (1×/Woche)</summary>
       <div class="sub" style="margin:10px 0 4px">Gelenkschonend, kein Laufzwang. An einem freien oder Schicht-Tag — schont Schulter & Rücken.</div>
       <div id="condList"></div>
     </details>
+   </div>
+
+   <!-- PLAYER (Bend-Style, eine Übung im Fokus) -->
+   <div id="wkPlayer" style="display:none"></div>
+
   </div>
 
   <!-- ===== GEIST ===== -->
@@ -505,7 +550,7 @@ const OBJECTIONS = [
    Schwierigkeits-Leiter [{park,band},...]. Doppelte Progression läuft über levels + Wdh. */
 const WORKOUTS = {
   A:{name:"Ganzkörper A",ex:[
-    {id:"b_ruecken_vert",tag:"Vertikal Ziehen · Park",repLow:5,repHigh:10,media:{icon:"🧗",img:"",video:"https://www.youtube.com/watch?v=nxtoArFXJ2Y"},
+    {id:"b_ruecken_vert",tag:"Vertikal Ziehen · Park",repLow:5,repHigh:10,media:{icon:"🧗",img:"media/b_ruecken_vert.jpg",video:"https://www.youtube.com/watch?v=nxtoArFXJ2Y"},
      tip:"Ziel 🎯 1. sauberer Klimmzug. Dead Hang = Sekunden zählen, Negative langsam (3–5 s). Schulterblätter runterziehen, nur im schmerzfreien Bereich.",
      levels:[
        {park:"Dead Hang 20–40 s (Sek. halten)",band:"Band Lat Pulldown (leicht)"},
@@ -514,7 +559,7 @@ const WORKOUTS = {
        {park:"Band-unterstützte Klimmzüge",band:"Band-unterstützte Klimmzüge"},
        {park:"Voller Klimmzug 🎯",band:"Klimmzug (Band als Backup)"}
      ]},
-    {id:"a_brust",tag:"Horizontal Drücken",repLow:8,repHigh:12,media:{icon:"🫸",img:"",video:"https://www.youtube.com/watch?v=QMPCbUSQTRo"},
+    {id:"a_brust",tag:"Horizontal Drücken",repLow:8,repHigh:12,media:{icon:"🫸",img:"media/a_brust.gif",video:"https://www.youtube.com/watch?v=QMPCbUSQTRo"},
      tip:"Schulterblätter oben aktiv „rausschieben\". Erst Wdh hoch (8→12), dann nächste Stufe. Keine tiefen Dips solange Schulter symptomatisch.",
      levels:[
        {park:"Liegestütze erhöht (Hände auf Stange/Bank)",band:"Band Chest Press"},
@@ -522,7 +567,7 @@ const WORKOUTS = {
        {park:"Liegestütze flach",band:"Band Chest Press (stark)"},
        {park:"Liegestütze Füße erhöht (Decline)",band:"Band Chest Press einarmig"}
      ]},
-    {id:"a_beine",tag:"Beine · Squat",repLow:10,repHigh:15,media:{icon:"🦵",img:"",video:"https://www.youtube.com/watch?v=1IvZweXOJZY"},
+    {id:"a_beine",tag:"Beine · Squat",repLow:10,repHigh:15,media:{icon:"🦵",img:"media/a_beine.jpg",video:"https://www.youtube.com/watch?v=1IvZweXOJZY"},
      tip:"Tief & sauber, Knie folgt den Zehen. Richtung Pistol Squat.",
      levels:[
        {park:"Bodyweight Squat (tief)",band:"Band / Goblet Squat"},
@@ -530,13 +575,13 @@ const WORKOUTS = {
        {park:"Bulgarian Split Squat (Fuß erhöht)",band:"Band Bulgarian Split Squat"},
        {park:"Pistol-Progression (erhöht/assistiert)",band:"Band-assistierter Pistol Squat"}
      ]},
-    {id:"a_core",tag:"Core · Anti-Extension",repLow:8,repHigh:12,media:{icon:"🧘",img:"",video:"https://www.youtube.com/watch?v=6BUVunRfJig"},
+    {id:"a_core",tag:"Core · Anti-Extension",repLow:8,repHigh:12,media:{icon:"🧘",img:"media/a_core.gif",video:"https://www.youtube.com/watch?v=6BUVunRfJig"},
      tip:"Wdh = pro Seite (Dead Bug). Unterer Rücken bleibt am Boden — kein Hohlkreuz. Ab Stufe 2 zählst du Sekunden Hollow Hold.",
      levels:[
        {park:"Dead Bug (pro Seite)",band:"Dead Bug (pro Seite)"},
        {park:"Hollow Hold Tuck (Sek. halten)",band:"Hollow Hold Tuck (Sek. halten)"}
      ]},
-    {id:"a_rotation",tag:"Schulter-Reha · Pflicht",repLow:15,repHigh:20,media:{icon:"🪢",img:"",video:"https://www.youtube.com/watch?v=UTTTkwP_1ag"},
+    {id:"a_rotation",tag:"Schulter-Reha · Pflicht",repLow:15,repHigh:20,media:{icon:"🪢",img:"media/a_rotation.jpg",video:"https://www.youtube.com/watch?v=UTTTkwP_1ag"},
      tip:"Reha-Block für die rechte Schulter. Leicht & sauber, nie um jeden Preis steigern. Immer dabei.",
      levels:[
        {park:"Band Außenrotation (2×15)",band:"Band Außenrotation (2×15)"}
@@ -565,14 +610,14 @@ const WORKOUTS = {
        {park:"Einbeinige Glute Bridge + Ausfallschritte",band:"Band RDL einbeinig + Ausfallschritte"},
        {park:"Nordic-Curl-Negative (langsam) + Ausfallschritte",band:"Band Leg Curl + Ausfallschritte"}
      ]},
-    {id:"b_core",tag:"Core",repLow:8,repHigh:12,media:{icon:"🐦",img:"",video:"https://www.youtube.com/watch?v=cjKIpqOOkwo"},
+    {id:"b_core",tag:"Core",repLow:8,repHigh:12,media:{icon:"🐦",img:"media/b_core.gif",video:"https://www.youtube.com/watch?v=cjKIpqOOkwo"},
      tip:"Wdh = pro Seite (Bird-Dog). Knieheben langsam, KEIN Schwung — schützt den unteren Rücken. Ab Stufe 3 zählst du Sekunden.",
      levels:[
        {park:"Bird-Dog (pro Seite)",band:"Bird-Dog (pro Seite)"},
        {park:"Hängendes Knieheben (langsam, kein Schwung)",band:"Liegendes Knieheben (kein Schwung)"},
        {park:"L-Sit Tuck (Sek. halten)",band:"L-Sit Tuck (Sek. halten)"}
      ]},
-    {id:"b_schulter_reha",tag:"Schulter-Reha · WICHTIG",repLow:15,repHigh:20,media:{icon:"🪢",img:"",video:"https://www.youtube.com/results?search_query=Face+Pull+Theraband+richtig+deutsch"},
+    {id:"b_schulter_reha",tag:"Schulter-Reha · WICHTIG",repLow:15,repHigh:20,media:{icon:"🪢",img:"media/a_rotation.jpg",video:"https://www.youtube.com/results?search_query=Face+Pull+Theraband+richtig+deutsch"},
      tip:"Dein wichtigster Reha-Block. Nie weglassen. Leicht & sauber — nicht um jeden Preis steigern.",
      levels:[
        {park:"Face Pull + Außenrotation (Band) 2×15",band:"Face Pull + Außenrotation 2×15"}
@@ -585,7 +630,7 @@ function load(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v===nu
 function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function todayStr(){return new Date().toLocaleDateString("de-DE",{weekday:"short",day:"2-digit",month:"2-digit"})}
 
-let S={wo:"A",mode:"park",sets:2,done:{},reps:{}};
+let S={wo:"A",mode:"park",sets:2,done:{},reps:{},training:"setup",cur:0,cset:0,phase:"work",psecs:0};
 
 /* ===================== ROUTINE ===================== */
 function getDayState(){
@@ -712,49 +757,101 @@ function renderPhaseHint(){
   const ph=calendarPhase();
   el.innerHTML = ph ? ("📅 "+ph.txt) : 'Wiedereinstieg Wo 1–2: <b style="color:var(--txt)">2 Sätze</b>, locker.';
 }
-function renderExercises(){
-  const list=document.getElementById("exList"); const ex=WORKOUTS[S.wo].ex; list.innerHTML="";
-  ex.forEach((e,i)=>{
-    const {done,reps}=ensureRows(i,e); const p=getProg(e);
-    const allDone=done.slice(0,S.sets).every(Boolean);
-    const variant=e.levels[p.levelIdx][S.mode];
-    const isHold=/Hold|Hang|Halten|Stütz|Dehn/i.test(variant);   // Halteübung → Belastungs-Timer anbieten
-    const last=lastTimeReps(e.id);
-    const lastTxt=last?("Letztes Mal: "+last.join("·")+(isHold?" s":" Wdh")):"Letztes Mal: –";
-    const card=document.createElement("div"); card.className="ex"+(allDone?" done":"");
-    let setsHtml="";
-    for(let s=0;s<S.sets;s++){ const on=done[s];
-      setsHtml+=`<div class="rep ${on?'on':''}">
-        <button class="repbtn" onclick="stepRep(${i},${s},-1)">−</button>
-        <span class="repval" onclick="markSet(${i},${s})">${reps[s]}</span>
-        <button class="repbtn" onclick="stepRep(${i},${s},1)">+</button></div>`; }
-    const md=e.media||{};
-    card.innerHTML=`<div class="row between"><span class="tag">${e.tag}</span>
-        <span class="stufe">Stufe ${p.levelIdx+1}/${e.levels.length}</span></div>
-      <div class="ex-head"><span class="ex-thumb">${md.icon||"🏋️"}</span><h3>${variant}</h3></div>
-      <div class="desc">🎯 Ziel: <b style="color:var(--txt)">${p.targetReps} Wdh</b> × ${S.sets} Sätze · <span class="last">${lastTxt}</span></div>
-      <div class="sets">${setsHtml}</div>
-      <div class="ex-actions"><button class="btn-accent" onclick="restFromSet()">⏱️ Pause 90 s</button>${isHold?`<button onclick="startHold(30)">⏳ Halten</button>`:""}${md.video?`<button onclick="openDemo('${md.video}')">▶ Demo</button>`:""}<button onclick="toggleProg(${i})">ℹ️ Tipp</button></div>
-      <div class="prog" id="prog${i}">${e.tip}</div>`;
-    list.appendChild(card);
-  });
+/* --- Medien-Helfer (Bild/Video groß, Emoji-Fallback) --- */
+function mediaTag(md,cls,emojiCls){ md=md||{}; const icon=md.icon||"🏋️";
+  if(md.img){
+    if(/\.mp4$/i.test(md.img)) return `<video src="${md.img}" class="${cls}" autoplay muted loop playsinline onerror="mediaErr(this,'${icon}','${emojiCls}')"></video>`;
+    return `<img src="${md.img}" class="${cls}" alt="" onerror="mediaErr(this,'${icon}','${emojiCls}')">`;
+  }
+  return `<span class="${emojiCls}">${icon}</span>`;
 }
-function setWO(w){S.wo=w;S.done={};S.reps={};renderHeader();renderSeg();renderExercises();}
+function mediaErr(node,icon,cls){ const s=document.createElement("span"); s.className=cls; s.textContent=icon; if(node&&node.replaceWith)node.replaceWith(s); }
+
+/* --- Setup / Start-Übersicht --- */
+function renderSetupOverview(){
+  const el=document.getElementById("todayOverview"); if(!el)return; const ex=WORKOUTS[S.wo].ex;
+  el.innerHTML=`<div class="ov-title">Heute · ${ex.length} Übungen · ${S.sets} Sätze</div><div class="ov-row">`+
+    ex.map(e=>{const v=e.levels[getProg(e).levelIdx][S.mode]; return `<div class="ov-item">${mediaTag(e.media,"ov-thumb","ov-emoji")}<span class="ov-nm">${v}</span></div>`;}).join("")+`</div>`;
+}
+function setWO(w){S.wo=w;S.done={};S.reps={};S.cur=0;S.cset=0;renderHeader();renderSeg();renderSetupOverview();}
 function swapWorkout(){setWO(S.wo==="A"?"B":"A");}
-function setMode(m){S.mode=m;save("wkMode",m);renderSeg();renderExercises();}
-function setSets(n){S.sets=n;save("wkSets",n);renderSeg();renderExercises();}
-function stepRep(i,s,delta){
-  const e=WORKOUTS[S.wo].ex[i]; ensureRows(i,e);
-  S.reps[i][s]=Math.max(0,(S.reps[i][s]||0)+delta); renderExercises();
-}
-function markSet(i,s){
-  const e=WORKOUTS[S.wo].ex[i]; const {done}=ensureRows(i,e);
-  done[s]=!done[s]; renderExercises();
-  if(done[s]){openTimer();timerMode('rest');setPreset(90);startTimer();}
-}
-function toggleProg(i){document.getElementById("prog"+i).classList.toggle("show");}
+function setMode(m){S.mode=m;save("wkMode",m);renderSeg();renderSetupOverview();}
+function setSets(n){S.sets=n;save("wkSets",n);renderSeg();renderSetupOverview();}
 function openDemo(url){window.open(url,"_blank","noopener");}
-function restFromSet(){openTimer();timerMode('rest');setPreset(90);startTimer();}
+
+/* --- Trainings-Player (Bend-Style, eine Übung im Fokus, Auto-Flow) --- */
+let PT=null;
+function curEx(){return WORKOUTS[S.wo].ex[S.cur];}
+function curIsHold(){const e=curEx();const v=e.levels[getProg(e).levelIdx][S.mode];return /Hold|Hang|Halten|Stütz|Dehn/i.test(v);}
+function nextTarget(){const N=WORKOUTS[S.wo].ex.length; if(S.cset+1<S.sets)return{ex:S.cur,set:S.cset+1}; if(S.cur+1<N)return{ex:S.cur+1,set:0}; return null;}
+function startSession(){
+  stopPT(); S.training="player"; S.cur=0; S.cset=0; S.phase="work"; S.done={}; S.reps={};
+  document.getElementById("wkSetup").style.display="none"; document.getElementById("wkPlayer").style.display="block";
+  window.scrollTo(0,0); renderPlayer();
+}
+function backToSetup(){
+  stopPT(); S.training="setup";
+  document.getElementById("wkPlayer").style.display="none"; document.getElementById("wkSetup").style.display="block";
+  renderSetupOverview();
+}
+function finishSession(){ stopPT(); finishWorkout(); }
+function renderPlayer(){
+  const wrap=document.getElementById("wkPlayer"); if(!wrap)return;
+  const ex=WORKOUTS[S.wo].ex, N=ex.length;
+  if(S.cur>=N){ finishSession(); return; }
+  const e=ex[S.cur]; const p=getProg(e); ensureRows(S.cur,e);
+  const variant=e.levels[p.levelIdx][S.mode];
+  const isHold=/Hold|Hang|Halten|Stütz|Dehn/i.test(variant);
+  const md=e.media||{};
+  let dots=""; for(let k=0;k<N;k++) dots+=`<span class="pl-dot${k<S.cur?' done':''}${k===S.cur?' on':''}"></span>`;
+  const top=`<div class="pl-top"><button class="pl-x" onclick="backToSetup()">✕</button><div class="pl-prog">Übung ${S.cur+1}/${N}</div><div class="pl-dots">${dots}</div></div>`;
+  const t=nextTarget();
+  let nextHtml='🏁 <b>Workout-Ende</b>';
+  if(t){ const nx=ex[t.ex]; const nv=nx.levels[getProg(nx).levelIdx][S.mode];
+    nextHtml=`${mediaTag(nx.media,"ov-thumb","ov-emoji")}<span><b>${nv}</b><br><span class="sub">Satz ${t.set+1}/${S.sets}</span></span>`; }
+  if(S.phase==="rest"){
+    wrap.innerHTML=top+`<div class="pl-rest"><div class="pl-rlabel">Pause</div><div class="pl-count" id="plCount">${fmt(S.psecs)}</div>
+      <div class="pl-restbtns"><button onclick="addRest(15)">+15 s</button><button class="btn-accent" onclick="skipRest()">Überspringen ▶</button></div></div>
+      <div class="pl-nextbig">Als nächstes:&nbsp;${nextHtml}</div>`;
+    return;
+  }
+  const reps=S.reps[S.cur][S.cset];
+  const mid = S.phase==="hold"
+    ? `<div class="pl-count" id="plCount" style="font-size:50px;margin:8px 0">${fmt(S.psecs)}</div><button class="btn-ghost pl-primary" onclick="stopHoldStep()">⏹ Stopp</button>`
+    : (isHold
+        ? `<div class="pl-stepper"><button onclick="plStep(-1)">−</button><span id="plRep">${reps}</span><button onclick="plStep(1)">+</button></div><button class="btn-green pl-primary" id="plPrimary" onclick="startHoldStep()">▶ ${reps} s Halten</button>`
+        : `<div class="pl-stepper"><button onclick="plStep(-1)">−</button><span id="plRep">${reps}</span><button onclick="plStep(1)">+</button></div><button class="btn-green pl-primary" id="plPrimary" onclick="workDone()">Satz fertig ✓</button>`);
+  wrap.innerHTML=top+`
+    <div class="pl-media">${mediaTag(md,"pl-media-el","pl-emoji")}</div>
+    <div class="pl-tag">${e.tag} · Stufe ${p.levelIdx+1}/${e.levels.length}</div>
+    <h2 class="pl-name">${variant}</h2>
+    <div class="pl-target">🎯 ${p.targetReps} ${isHold?"Sek.":"Wdh"} · Satz ${S.cset+1}/${S.sets}</div>
+    ${mid}
+    <div class="pl-actions">${md.video?`<button onclick="openDemo('${md.video}')">▶ Demo</button>`:""}<button onclick="plTip()">ℹ️ Tipp</button><button onclick="skipExercise()">Übung ▶</button></div>
+    <div class="pl-tipbox" id="plTip" style="display:none">${e.tip}</div>
+    <div class="pl-next">Als nächstes:&nbsp;${nextHtml}</div>
+    <button class="pl-back" onclick="prevStep()">◀ Zurück</button>`;
+}
+function plStep(d){ S.reps[S.cur][S.cset]=Math.max(0,(S.reps[S.cur][S.cset]||0)+d); const r=S.reps[S.cur][S.cset];
+  const el=document.getElementById("plRep"); if(el)el.textContent=r;
+  const pb=document.getElementById("plPrimary"); if(pb&&curIsHold())pb.textContent="▶ "+r+" s Halten"; }
+function plTip(){ const t=document.getElementById("plTip"); if(t)t.style.display=t.style.display==="none"?"block":"none"; }
+function workDone(){ S.done[S.cur][S.cset]=true; startRest(90); }
+function startRest(secs){ stopPT(); S.phase="rest"; S.psecs=secs; renderPlayer(); PT=setInterval(ptick,1000); }
+function startHoldStep(){ stopPT(); S.phase="hold"; S.psecs=S.reps[S.cur][S.cset]||30; renderPlayer(); PT=setInterval(ptick,1000); }
+function stopHoldStep(){ stopPT(); S.phase="work"; renderPlayer(); }
+function ptick(){ S.psecs--; const el=document.getElementById("plCount"); if(el)el.textContent=fmt(Math.max(0,S.psecs));
+  if(S.psecs>0&&S.psecs%30===0){beepShort(); if(sndOn()&&navigator.vibrate)navigator.vibrate(120);}
+  if(S.psecs<=3&&S.psecs>0){beepTick(); if(sndOn()&&navigator.vibrate)navigator.vibrate(60);}
+  if(S.psecs<=0){ stopPT(); beep(); buzz();
+    if(S.phase==="hold"){ S.done[S.cur][S.cset]=true; flash("✅ Halten geschafft!"); startRest(90); }
+    else { advance(); } } }
+function stopPT(){ if(PT){clearInterval(PT);PT=null;} }
+function addRest(n){ S.psecs+=n; const el=document.getElementById("plCount"); if(el)el.textContent=fmt(S.psecs); }
+function skipRest(){ stopPT(); advance(); }
+function advance(){ S.cset++; const N=WORKOUTS[S.wo].ex.length; if(S.cset>=S.sets){S.cset=0;S.cur++;} if(S.cur>=N){finishSession();return;} S.phase="work"; window.scrollTo(0,0); renderPlayer(); }
+function skipExercise(){ stopPT(); S.cset=0; S.cur++; const N=WORKOUTS[S.wo].ex.length; if(S.cur>=N){finishSession();return;} S.phase="work"; window.scrollTo(0,0); renderPlayer(); }
+function prevStep(){ stopPT(); if(S.phase!=="work"){ S.phase="work"; renderPlayer(); return; } if(S.cset>0)S.cset--; else if(S.cur>0){S.cur--;S.cset=S.sets-1;} renderPlayer(); }
 function finishWorkout(){
   const ex=WORKOUTS[S.wo].ex; const exMap={}; const notes=[];
   ex.forEach((e,i)=>{
@@ -767,7 +864,7 @@ function finishWorkout(){
   });
   const h=load("wkHistory",[]); const d=new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"});
   h.unshift({wo:S.wo,mode:S.mode,sets:S.sets,date:d,ts:Date.now(),ex:exMap}); save("wkHistory",h.slice(0,60));
-  S.done={}; S.reps={}; S.wo=suggestNext(); renderHeader();renderSeg();renderExercises(); renderHistory();
+  S.done={}; S.reps={}; S.cur=0; S.cset=0; S.wo=suggestNext(); renderHeader();renderSeg();renderHistory(); backToSetup();
   flash(notes.length?("✅ "+notes[0]):("✅ Gespeichert! Nächstes: Workout "+S.wo));
 }
 function renderHistory(){
@@ -1010,7 +1107,7 @@ function toggleSound(){const on=!sndOn(); save("soundOn",on); renderSound(); if(
   if(load("wkStartDate",null)===null) save("wkStartDate",new Date().toISOString());  // Programmstart = heute
   S.mode=load("wkMode","park"); S.sets=load("wkSets",2); S.wo=suggestNext();
   renderRoutine(); renderMeals(); renderShop();
-  renderHeader(); renderSeg(); renderExercises(); renderHistory(); renderPhaseHint();
+  renderHeader(); renderSeg(); renderSetupOverview(); renderHistory(); renderPhaseHint();
   renderPrecall(); renderReframes(); renderObjections(); renderWins(); renderConditioning();
   renderWeight(); renderSkills(); renderSound();
   timerMode("rest"); setPreset(90);
