@@ -5,7 +5,7 @@
  *  - static assets (icons, manifest): CACHE-FIRST (fast, rarely change).
  * Bump CACHE on every release to bust old caches.
  */
-const CACHE = "daily-os-v2";
+const CACHE = "daily-os-v3";
 const APP_SHELL = [
   "./",
   "./index.html",

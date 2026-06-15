@@ -62,6 +62,10 @@
   .ex{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:10px}
   .ex.done{border-color:var(--accent2);background:rgba(63,185,80,.06)}
   .ex h3{margin:0 0 2px}
+  .ex-head{display:flex;align-items:center;gap:10px;margin:2px 0}
+  .ex-thumb{width:42px;height:42px;border-radius:10px;background:var(--card2);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0;line-height:1}
+  .ex-head h3{margin:0;flex:1}
   .ex .tag{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
   .ex .desc{font-size:13px;color:var(--muted);margin:6px 0 10px;line-height:1.45}
   .sets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
@@ -76,7 +80,7 @@
   .rep.on .repval{color:var(--accent2)}
   .stufe{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--card2);border:1px solid var(--line);color:var(--muted)}
   .last{color:var(--muted)}
-  .ex-actions{display:flex;gap:8px}.ex-actions button{flex:1;padding:9px;font-size:13px}
+  .ex-actions{display:flex;gap:8px;flex-wrap:wrap}.ex-actions button{flex:1 1 auto;min-width:84px;padding:9px;font-size:13px}
   .prog{font-size:12.5px;color:var(--blue);background:rgba(56,139,253,.08);border-radius:10px;padding:8px 10px;margin-top:8px;display:none;line-height:1.5}
   .prog.show{display:block}
   /* meals */
@@ -501,7 +505,7 @@ const OBJECTIONS = [
    Schwierigkeits-Leiter [{park,band},...]. Doppelte Progression läuft über levels + Wdh. */
 const WORKOUTS = {
   A:{name:"Ganzkörper A",ex:[
-    {id:"b_ruecken_vert",tag:"Vertikal Ziehen · Park",repLow:5,repHigh:10,
+    {id:"b_ruecken_vert",tag:"Vertikal Ziehen · Park",repLow:5,repHigh:10,media:{icon:"🧗",img:"",video:"https://www.youtube.com/watch?v=nxtoArFXJ2Y"},
      tip:"Ziel 🎯 1. sauberer Klimmzug. Dead Hang = Sekunden zählen, Negative langsam (3–5 s). Schulterblätter runterziehen, nur im schmerzfreien Bereich.",
      levels:[
        {park:"Dead Hang 20–40 s (Sek. halten)",band:"Band Lat Pulldown (leicht)"},
@@ -510,7 +514,7 @@ const WORKOUTS = {
        {park:"Band-unterstützte Klimmzüge",band:"Band-unterstützte Klimmzüge"},
        {park:"Voller Klimmzug 🎯",band:"Klimmzug (Band als Backup)"}
      ]},
-    {id:"a_brust",tag:"Horizontal Drücken",repLow:8,repHigh:12,
+    {id:"a_brust",tag:"Horizontal Drücken",repLow:8,repHigh:12,media:{icon:"🫸",img:"",video:"https://www.youtube.com/watch?v=QMPCbUSQTRo"},
      tip:"Schulterblätter oben aktiv „rausschieben\". Erst Wdh hoch (8→12), dann nächste Stufe. Keine tiefen Dips solange Schulter symptomatisch.",
      levels:[
        {park:"Liegestütze erhöht (Hände auf Stange/Bank)",band:"Band Chest Press"},
@@ -518,7 +522,7 @@ const WORKOUTS = {
        {park:"Liegestütze flach",band:"Band Chest Press (stark)"},
        {park:"Liegestütze Füße erhöht (Decline)",band:"Band Chest Press einarmig"}
      ]},
-    {id:"a_beine",tag:"Beine · Squat",repLow:10,repHigh:15,
+    {id:"a_beine",tag:"Beine · Squat",repLow:10,repHigh:15,media:{icon:"🦵",img:"",video:"https://www.youtube.com/watch?v=1IvZweXOJZY"},
      tip:"Tief & sauber, Knie folgt den Zehen. Richtung Pistol Squat.",
      levels:[
        {park:"Bodyweight Squat (tief)",band:"Band / Goblet Squat"},
@@ -526,27 +530,27 @@ const WORKOUTS = {
        {park:"Bulgarian Split Squat (Fuß erhöht)",band:"Band Bulgarian Split Squat"},
        {park:"Pistol-Progression (erhöht/assistiert)",band:"Band-assistierter Pistol Squat"}
      ]},
-    {id:"a_core",tag:"Core · Anti-Extension",repLow:8,repHigh:12,
+    {id:"a_core",tag:"Core · Anti-Extension",repLow:8,repHigh:12,media:{icon:"🧘",img:"",video:"https://www.youtube.com/watch?v=6BUVunRfJig"},
      tip:"Wdh = pro Seite (Dead Bug). Unterer Rücken bleibt am Boden — kein Hohlkreuz. Ab Stufe 2 zählst du Sekunden Hollow Hold.",
      levels:[
        {park:"Dead Bug (pro Seite)",band:"Dead Bug (pro Seite)"},
        {park:"Hollow Hold Tuck (Sek. halten)",band:"Hollow Hold Tuck (Sek. halten)"}
      ]},
-    {id:"a_rotation",tag:"Schulter-Reha · Pflicht",repLow:15,repHigh:20,
+    {id:"a_rotation",tag:"Schulter-Reha · Pflicht",repLow:15,repHigh:20,media:{icon:"🪢",img:"",video:"https://www.youtube.com/watch?v=UTTTkwP_1ag"},
      tip:"Reha-Block für die rechte Schulter. Leicht & sauber, nie um jeden Preis steigern. Immer dabei.",
      levels:[
        {park:"Band Außenrotation (2×15)",band:"Band Außenrotation (2×15)"}
      ]}
   ]},
   B:{name:"Ganzkörper B",ex:[
-    {id:"b_ruecken_hor",tag:"Horizontal Ziehen · Park",repLow:8,repHigh:12,
+    {id:"b_ruecken_hor",tag:"Horizontal Ziehen · Park",repLow:8,repHigh:12,media:{icon:"🚣",img:"",video:"https://www.youtube.com/watch?v=vvBD6H9ieyg"},
      tip:"Sehr schulterfreundlich, top für deinen Rücken. Schulterblätter zusammenziehen. Je tiefer die Stange, desto schwerer.",
      levels:[
        {park:"Australian Rows (Stange hüfthoch)",band:"Band Row (sitzend)"},
        {park:"Australian Rows flacher (Stange tiefer)",band:"Band Row (stärker)"},
        {park:"Australian Rows Füße erhöht",band:"Band Row einarmig"}
      ]},
-    {id:"b_push",tag:"Drücken · schulterschonend",repLow:8,repHigh:12,
+    {id:"b_push",tag:"Drücken · schulterschonend",repLow:8,repHigh:12,media:{icon:"🫸",img:"",video:"https://www.youtube.com/watch?v=NjD0qEusDEI"},
      tip:"KEIN Pike/Überkopf-Drücken vorerst. Dip-Vorbereitung (Stütz-Halten/Negative) erst wenn die Schulter schmerzfrei ist.",
      levels:[
        {park:"Enge Liegestütze (Ellbogen am Körper)",band:"Band Triceps Press (eng)"},
@@ -554,21 +558,21 @@ const WORKOUTS = {
        {park:"Stütz-Halten am Barren 10–20 s (schmerzfrei!)",band:"Band Press tief"},
        {park:"Dip-Negative (3–5 s, schmerzfrei!)",band:"Band Dips"}
      ]},
-    {id:"b_beine",tag:"Beine · Glute/Hinge",repLow:10,repHigh:12,
+    {id:"b_beine",tag:"Beine · Glute/Hinge",repLow:10,repHigh:12,media:{icon:"🍑",img:"",video:"https://www.youtube.com/watch?v=3S7Y7htTdRU"},
      tip:"Hüfte nach hinten, Rücken gerade. Starke Glutes entlasten deinen unteren Rücken. Nordic langsam ablassen.",
      levels:[
        {park:"Glute Bridge (beidbeinig)",band:"Band Glute Bridge"},
        {park:"Einbeinige Glute Bridge + Ausfallschritte",band:"Band RDL einbeinig + Ausfallschritte"},
        {park:"Nordic-Curl-Negative (langsam) + Ausfallschritte",band:"Band Leg Curl + Ausfallschritte"}
      ]},
-    {id:"b_core",tag:"Core",repLow:8,repHigh:12,
+    {id:"b_core",tag:"Core",repLow:8,repHigh:12,media:{icon:"🐦",img:"",video:"https://www.youtube.com/watch?v=cjKIpqOOkwo"},
      tip:"Wdh = pro Seite (Bird-Dog). Knieheben langsam, KEIN Schwung — schützt den unteren Rücken. Ab Stufe 3 zählst du Sekunden.",
      levels:[
        {park:"Bird-Dog (pro Seite)",band:"Bird-Dog (pro Seite)"},
        {park:"Hängendes Knieheben (langsam, kein Schwung)",band:"Liegendes Knieheben (kein Schwung)"},
        {park:"L-Sit Tuck (Sek. halten)",band:"L-Sit Tuck (Sek. halten)"}
      ]},
-    {id:"b_schulter_reha",tag:"Schulter-Reha · WICHTIG",repLow:15,repHigh:20,
+    {id:"b_schulter_reha",tag:"Schulter-Reha · WICHTIG",repLow:15,repHigh:20,media:{icon:"🪢",img:"",video:"https://www.youtube.com/results?search_query=Face+Pull+Theraband+richtig+deutsch"},
      tip:"Dein wichtigster Reha-Block. Nie weglassen. Leicht & sauber — nicht um jeden Preis steigern.",
      levels:[
        {park:"Face Pull + Außenrotation (Band) 2×15",band:"Face Pull + Außenrotation 2×15"}
@@ -724,12 +728,13 @@ function renderExercises(){
         <button class="repbtn" onclick="stepRep(${i},${s},-1)">−</button>
         <span class="repval" onclick="markSet(${i},${s})">${reps[s]}</span>
         <button class="repbtn" onclick="stepRep(${i},${s},1)">+</button></div>`; }
+    const md=e.media||{};
     card.innerHTML=`<div class="row between"><span class="tag">${e.tag}</span>
         <span class="stufe">Stufe ${p.levelIdx+1}/${e.levels.length}</span></div>
-      <h3>${variant}</h3>
+      <div class="ex-head"><span class="ex-thumb">${md.icon||"🏋️"}</span><h3>${variant}</h3></div>
       <div class="desc">🎯 Ziel: <b style="color:var(--txt)">${p.targetReps} Wdh</b> × ${S.sets} Sätze · <span class="last">${lastTxt}</span></div>
       <div class="sets">${setsHtml}</div>
-      <div class="ex-actions"><button class="btn-accent" onclick="restFromSet()">⏱️ Pause 90 s</button>${isHold?`<button onclick="startHold(30)">⏳ Halten 30 s</button>`:""}<button onclick="toggleProg(${i})">ℹ️ Tipp</button></div>
+      <div class="ex-actions"><button class="btn-accent" onclick="restFromSet()">⏱️ Pause 90 s</button>${isHold?`<button onclick="startHold(30)">⏳ Halten</button>`:""}${md.video?`<button onclick="openDemo('${md.video}')">▶ Demo</button>`:""}<button onclick="toggleProg(${i})">ℹ️ Tipp</button></div>
       <div class="prog" id="prog${i}">${e.tip}</div>`;
     list.appendChild(card);
   });
@@ -748,6 +753,7 @@ function markSet(i,s){
   if(done[s]){openTimer();timerMode('rest');setPreset(90);startTimer();}
 }
 function toggleProg(i){document.getElementById("prog"+i).classList.toggle("show");}
+function openDemo(url){window.open(url,"_blank","noopener");}
 function restFromSet(){openTimer();timerMode('rest');setPreset(90);startTimer();}
 function finishWorkout(){
   const ex=WORKOUTS[S.wo].ex; const exMap={}; const notes=[];
