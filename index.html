@@ -171,15 +171,15 @@
     <div class="row between">
       <h1>🏋️ Heute dran:</h1><span class="badge" id="todayBadge">A</span>
     </div>
-    <div class="sub" id="todaySub">Brust-Tag · zuletzt: –</div>
+    <div class="sub" id="todaySub">Ganzkörper A · zuletzt: –</div>
     <div class="card">
       <div class="row between" style="margin-bottom:10px">
         <span style="font-size:13px;color:var(--muted)">Workout</span>
         <button class="btn-ghost" style="padding:5px 10px;font-size:12px" onclick="swapWorkout()">↺ wechseln</button>
       </div>
       <div class="seg" id="segWO">
-        <button data-wo="A" class="on" onclick="setWO('A')">🅰️ Brust (Push)</button>
-        <button data-wo="B" onclick="setWO('B')">🅱️ Rücken (Pull)</button>
+        <button data-wo="A" class="on" onclick="setWO('A')">🅰️ Ganzkörper A</button>
+        <button data-wo="B" onclick="setWO('B')">🅱️ Ganzkörper B</button>
       </div>
       <div style="height:8px"></div>
       <div class="seg blue" id="segMode">
@@ -198,10 +198,15 @@
       </div>
       <div class="sub" style="margin:8px 0 0" id="phaseHint">Wiedereinstieg Wo 1–2: <b style="color:var(--txt)">2 Sätze</b>, locker.</div>
     </div>
+    <div class="warnbox" style="margin-bottom:12px">🛡️ <b>2 Schutzregeln:</b> <b>Schulter rechts</b> — nur im schmerzfreien Bereich, KEIN Pike/Überkopf-Drücken & keine tiefen Dips solange symptomatisch; Fokus Rudern + Band-Außenrotation. <b>Unterer Rücken</b> — Anti-Extensions-Core (Dead Bug, Bird-Dog), kein Schwung-Beinheben, keine Überstreckung. Knacken ohne Schmerz = meist ok.</div>
     <details class="card">
-      <summary>🔥 Warm-up (5 Min)</summary>
-      <div class="d" style="margin-top:10px;color:var(--muted);font-size:13px;line-height:1.6">
-        1. Armkreisen vor/zurück — 30 s<br>2. Cat-Cow — 10× langsam<br>3. Band Pull-Apart — 15×<br>4. Bodyweight Squats — 15×<br>5. Schulterkreisen + Wall Slides — 10×
+      <summary>🔥 Warm-up & Mobility (10–15 Min · jedes Training)</summary>
+      <div class="d" style="margin-top:10px;color:var(--muted);font-size:13px;line-height:1.7">
+        <b style="color:var(--accent)">1. Handgelenke</b> (wichtigstes Gelenk)<br>• Handflächen am Boden, sanft vor/zurück — 2× ~40 s<br>• Handgelenk-Kreise beide Richtungen — 10×<br>
+        <b style="color:var(--accent);display:inline-block;margin-top:8px">2. Schulter & Scapula</b><br>• Band Pull-Aparts — 15×<br>• Scapula Push-ups — 10×<br>• Scapula Hangs/Pulls an der Stange — 5×<br>• <b>Band Außenrotation — 2×15 (Pflicht)</b><br>
+        <b style="color:var(--accent);display:inline-block;margin-top:8px">3. BWS & unterer Rücken</b><br>• Faszienrolle oberer Rücken — 1 Min<br>• Cat-Cow — 10× langsam<br>• Bird-Dog — 8×/Seite · Glute Bridge — 10×<br>• Hüftbeuger-Dehnung (Ausfallschritt) — 2×30 s/Seite<br>
+        <b style="color:var(--accent);display:inline-block;margin-top:8px">4. Beine/Hüfte</b><br>• Bodyweight Squats langsam tief — 15× · Sprunggelenk · Beinpendeln<br>
+        <b style="color:var(--accent);display:inline-block;margin-top:8px">5. Spezifisch</b><br>• 1 leichter Satz der leichteren Progression vor der 1. Hauptübung
       </div>
     </details>
     <div id="exList"></div>
@@ -459,9 +464,10 @@ const CONDITIONING = [
   {ic:"🫁", t:"Atem-Ausdauer", d:"5 Min ruhige Nasenatmung beim lockeren Cardio, oder Box-Breathing im Geist-Tab.", why:"Bessere CO₂-Toleranz & Entspannung — kein Aufprall, schont Schulter/Rücken."}
 ];
 const SKILLS = [
-  {id:"pushup20", t:"20 saubere Liegestütze (flach)", d:"Brust fast zum Boden, Körper bleibt gerade."},
-  {id:"pullup", t:"1. sauberer Klimmzug 🎯", d:"Voller Hang → Kinn über die Stange, kontrolliert."},
-  {id:"dip", t:"1. Dip schmerzfrei", d:"Kontrolliert, Schulter ohne Stechen (ab Wo 4–6)."},
+  {id:"pullup10", t:"10 Klimmzüge", d:"Voller Hang → Kinn über die Stange, kontrolliert. Kraftfundament-Ziel."},
+  {id:"pushup25", t:"25 Liegestütze", d:"Flach, Brust fast zum Boden, Körper bleibt gerade. Kraftfundament-Ziel."},
+  {id:"dip15", t:"15 Dips", d:"Erst wenn die Schulter es schmerzfrei zulässt. Kraftfundament-Ziel."},
+  {id:"squat40", t:"40 Squats", d:"Tief & sauber am Stück. Kraftfundament-Ziel."},
   {id:"hollow", t:"Hollow Hold 20 s", d:"Unterer Rücken am Boden, Schultern & Beine leicht an."},
   {id:"pistol", t:"Pistol Squat (assistiert)", d:"Einbeinig runter, Festhalten zum Stützen erlaubt."},
   {id:"lsit", t:"L-Sit 10 s", d:"An Barren oder Boden, Beine waagerecht halten."}
@@ -494,83 +500,78 @@ const OBJECTIONS = [
 /* Jede Übung: id (stabiler Key), tag, repLow/repHigh (Spanne), tip, levels = aufsteigende
    Schwierigkeits-Leiter [{park,band},...]. Doppelte Progression läuft über levels + Wdh. */
 const WORKOUTS = {
-  A:{name:"Brust-Tag (Push)",ex:[
-    {id:"a_brust",tag:"Brust · Prio #1",repLow:8,repHigh:12,
-     tip:"Erst Wdh hoch (8→12), dann nächste Stufe. Dips erst ab Wo 4–6, schmerzfrei.",
+  A:{name:"Ganzkörper A",ex:[
+    {id:"b_ruecken_vert",tag:"Vertikal Ziehen · Park",repLow:5,repHigh:10,
+     tip:"Ziel 🎯 1. sauberer Klimmzug. Dead Hang = Sekunden zählen, Negative langsam (3–5 s). Schulterblätter runterziehen, nur im schmerzfreien Bereich.",
+     levels:[
+       {park:"Dead Hang 20–40 s (Sek. halten)",band:"Band Lat Pulldown (leicht)"},
+       {park:"Scapula Pulls (Schulterblätter runter)",band:"Band Lat Pulldown"},
+       {park:"Negative Klimmzüge (3–5 s runter)",band:"Band Lat Pulldown (stärker)"},
+       {park:"Band-unterstützte Klimmzüge",band:"Band-unterstützte Klimmzüge"},
+       {park:"Voller Klimmzug 🎯",band:"Klimmzug (Band als Backup)"}
+     ]},
+    {id:"a_brust",tag:"Horizontal Drücken",repLow:8,repHigh:12,
+     tip:"Schulterblätter oben aktiv „rausschieben\". Erst Wdh hoch (8→12), dann nächste Stufe. Keine tiefen Dips solange Schulter symptomatisch.",
      levels:[
        {park:"Liegestütze erhöht (Hände auf Stange/Bank)",band:"Band Chest Press"},
-       {park:"Liegestütze flach",band:"Band Chest Press (stärkeres Band)"},
-       {park:"Liegestütze Füße erhöht (Decline)",band:"Band Chest Press einarmig"},
-       {park:"Dips (schmerzfrei!)",band:"Band Dips / tiefer Press"}
-     ]},
-    {id:"a_schulter",tag:"Schulter · sanft",repLow:8,repHigh:12,
-     tip:"Anfangs leicht. Keine schwere Überkopf-Innenrotation.",
-     levels:[
-       {park:"Schräge Pike Push-up (leicht)",band:"Band Shoulder Press (leicht)"},
-       {park:"Pike Push-up",band:"Band Shoulder Press"}
-     ]},
-    {id:"a_trizeps",tag:"Trizeps · Arme #2",repLow:10,repHigh:12,
-     tip:"Flach halten wegen Schulter. Später Diamond-Liegestütze.",
-     levels:[
-       {park:"Bench Dips (Füße am Boden, nicht zu tief)",band:"Band Triceps Pushdown"},
-       {park:"Diamond-Liegestütze",band:"Band Triceps Pushdown (stärker)"}
+       {park:"Knie-Liegestütze",band:"Band Chest Press (stärker)"},
+       {park:"Liegestütze flach",band:"Band Chest Press (stark)"},
+       {park:"Liegestütze Füße erhöht (Decline)",band:"Band Chest Press einarmig"}
      ]},
     {id:"a_beine",tag:"Beine · Squat",repLow:10,repHigh:15,
-     tip:"Richtung Pistol Squat. Knie folgt Zehen.",
+     tip:"Tief & sauber, Knie folgt den Zehen. Richtung Pistol Squat.",
      levels:[
-       {park:"Bodyweight Squats",band:"Band Squat / Goblet Squat"},
-       {park:"Bulgarian Split Squat (Fuß auf Bank)",band:"Band Bulgarian Split Squat"},
-       {park:"Pistol-Progression (assistiert)",band:"Band-assistierter Pistol Squat"}
+       {park:"Bodyweight Squat (tief)",band:"Band / Goblet Squat"},
+       {park:"Squat langsames Tempo (3 s runter)",band:"Band Squat langsam"},
+       {park:"Bulgarian Split Squat (Fuß erhöht)",band:"Band Bulgarian Split Squat"},
+       {park:"Pistol-Progression (erhöht/assistiert)",band:"Band-assistierter Pistol Squat"}
      ]},
-    {id:"a_waden",tag:"Waden",repLow:15,repHigh:20,
-     tip:"Volle Streckung oben, langsam runter.",
-     levels:[
-       {park:"Wadenheben an der Stufe",band:"Band-Wadenheben"}
-     ]},
-    {id:"a_core",tag:"Core · unterer Rücken",repLow:8,repHigh:12,
-     tip:"Wdh = pro Seite. Unterer Rücken bleibt am Boden. Ab Stufe 2 zählst du Sekunden Hollow Hold.",
+    {id:"a_core",tag:"Core · Anti-Extension",repLow:8,repHigh:12,
+     tip:"Wdh = pro Seite (Dead Bug). Unterer Rücken bleibt am Boden — kein Hohlkreuz. Ab Stufe 2 zählst du Sekunden Hollow Hold.",
      levels:[
        {park:"Dead Bug (pro Seite)",band:"Dead Bug (pro Seite)"},
-       {park:"Hollow Hold (Sek. halten)",band:"Hollow Hold (Sek. halten)"}
+       {park:"Hollow Hold Tuck (Sek. halten)",band:"Hollow Hold Tuck (Sek. halten)"}
+     ]},
+    {id:"a_rotation",tag:"Schulter-Reha · Pflicht",repLow:15,repHigh:20,
+     tip:"Reha-Block für die rechte Schulter. Leicht & sauber, nie um jeden Preis steigern. Immer dabei.",
+     levels:[
+       {park:"Band Außenrotation (2×15)",band:"Band Außenrotation (2×15)"}
      ]}
   ]},
-  B:{name:"Rücken-Tag (Pull)",ex:[
-    {id:"b_ruecken_vert",tag:"Rücken vertikal · Prio #2",repLow:6,repHigh:10,
-     tip:"Ziel 🎯 1. sauberer Klimmzug. Negative langsam (3–5 s).",
+  B:{name:"Ganzkörper B",ex:[
+    {id:"b_ruecken_hor",tag:"Horizontal Ziehen · Park",repLow:8,repHigh:12,
+     tip:"Sehr schulterfreundlich, top für deinen Rücken. Schulterblätter zusammenziehen. Je tiefer die Stange, desto schwerer.",
      levels:[
-       {park:"Australian / Inverted Rows",band:"Band Lat Pulldown"},
-       {park:"Negative Klimmzüge (3–5 s)",band:"Band Lat Pulldown (stärker)"},
-       {park:"Band-unterstützte Klimmzüge",band:"Band-unterstützte Klimmzüge"},
-       {park:"1. sauberer Klimmzug 🎯",band:"Klimmzug (Band als Backup)"}
+       {park:"Australian Rows (Stange hüfthoch)",band:"Band Row (sitzend)"},
+       {park:"Australian Rows flacher (Stange tiefer)",band:"Band Row (stärker)"},
+       {park:"Australian Rows Füße erhöht",band:"Band Row einarmig"}
      ]},
-    {id:"b_ruecken_hor",tag:"Rücken horizontal",repLow:8,repHigh:12,
-     tip:"Schulterblätter zusammenziehen.",
+    {id:"b_push",tag:"Drücken · schulterschonend",repLow:8,repHigh:12,
+     tip:"KEIN Pike/Überkopf-Drücken vorerst. Dip-Vorbereitung (Stütz-Halten/Negative) erst wenn die Schulter schmerzfrei ist.",
      levels:[
-       {park:"Australian / Inverted Rows",band:"Band Row (sitzend)"},
-       {park:"Inverted Rows Füße erhöht",band:"Band Row (stärker, einarmig)"}
+       {park:"Enge Liegestütze (Ellbogen am Körper)",band:"Band Triceps Press (eng)"},
+       {park:"Liegestütze langsames Tempo (3 s)",band:"Band Press langsam"},
+       {park:"Stütz-Halten am Barren 10–20 s (schmerzfrei!)",band:"Band Press tief"},
+       {park:"Dip-Negative (3–5 s, schmerzfrei!)",band:"Band Dips"}
+     ]},
+    {id:"b_beine",tag:"Beine · Glute/Hinge",repLow:10,repHigh:12,
+     tip:"Hüfte nach hinten, Rücken gerade. Starke Glutes entlasten deinen unteren Rücken. Nordic langsam ablassen.",
+     levels:[
+       {park:"Glute Bridge (beidbeinig)",band:"Band Glute Bridge"},
+       {park:"Einbeinige Glute Bridge + Ausfallschritte",band:"Band RDL einbeinig + Ausfallschritte"},
+       {park:"Nordic-Curl-Negative (langsam) + Ausfallschritte",band:"Band Leg Curl + Ausfallschritte"}
+     ]},
+    {id:"b_core",tag:"Core",repLow:8,repHigh:12,
+     tip:"Wdh = pro Seite (Bird-Dog). Knieheben langsam, KEIN Schwung — schützt den unteren Rücken. Ab Stufe 3 zählst du Sekunden.",
+     levels:[
+       {park:"Bird-Dog (pro Seite)",band:"Bird-Dog (pro Seite)"},
+       {park:"Hängendes Knieheben (langsam, kein Schwung)",band:"Liegendes Knieheben (kein Schwung)"},
+       {park:"L-Sit Tuck (Sek. halten)",band:"L-Sit Tuck (Sek. halten)"}
      ]},
     {id:"b_schulter_reha",tag:"Schulter-Reha · WICHTIG",repLow:15,repHigh:20,
      tip:"Dein wichtigster Reha-Block. Nie weglassen. Leicht & sauber — nicht um jeden Preis steigern.",
      levels:[
-       {park:"Face Pull + Außenrotation (Band)",band:"Face Pull + Außenrotation"}
-     ]},
-    {id:"b_bizeps",tag:"Bizeps · Arme #2",repLow:8,repHigh:12,
-     tip:"Ellenbogen fix. Chin-up-Negative baut Richtung Klimmzug.",
-     levels:[
-       {park:"Untergriff-Rudern (Australian Curl)",band:"Band Bizeps Curl"},
-       {park:"Chin-up-Negative (3–5 s)",band:"Band Bizeps Curl (stärker)"}
-     ]},
-    {id:"b_beine",tag:"Beine · Hinge/Lunge",repLow:10,repHigh:12,
-     tip:"RDL: Hüfte nach hinten, Rücken gerade.",
-     levels:[
-       {park:"Ausfallschritte + Glute Bridge",band:"Band RDL + Glute Bridge"},
-       {park:"Bulgarian Split Squat + Single-Leg Glute Bridge",band:"Band RDL einbeinig"}
-     ]},
-    {id:"b_core",tag:"Core · unterer Rücken",repLow:8,repHigh:12,
-     tip:"Wdh = pro Seite. Langsam, Hüfte stabil. Ab Stufe 2 zählst du Sekunden Hollow Hold.",
-     levels:[
-       {park:"Bird-Dog (pro Seite)",band:"Bird-Dog (pro Seite)"},
-       {park:"Hollow Hold (Sek. halten)",band:"Hollow Hold (Sek. halten)"}
+       {park:"Face Pull + Außenrotation (Band) 2×15",band:"Face Pull + Außenrotation 2×15"}
      ]}
   ]}
 };
