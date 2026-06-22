@@ -184,6 +184,15 @@
   .presets{display:flex;gap:8px;margin-bottom:12px}.presets button{flex:1}
   .tctrl{display:flex;gap:8px}.tctrl button{flex:1;padding:14px;font-size:15px}
   .grab{width:40px;height:4px;background:var(--line);border-radius:2px;margin:0 auto 12px}
+  /* weekplan */
+  .wk-row{display:flex;gap:5px;margin-top:2px}
+  .wk-day{flex:1;text-align:center;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:7px 2px;display:flex;flex-direction:column;gap:3px;align-items:center}
+  .wk-day.on{background:rgba(255,107,53,.15);border-color:var(--accent)}
+  .wk-d{font-size:11px;color:var(--muted);font-weight:700}
+  .wk-day.on .wk-d{color:var(--accent)}
+  .wk-ic{font-size:16px;line-height:1}
+  .wk-n{font-size:9px;color:var(--muted);line-height:1.1}
+  .wk-day.on .wk-n{color:var(--txt)}
 </style>
 </head>
 <body>
@@ -203,8 +212,9 @@
         <button class="btn-ghost" style="padding:5px 10px;font-size:12px" onclick="resetDay()">↺ Neuer Tag</button>
       </div>
     </div>
+    <div id="weekplanCard"></div>
     <div id="routineList"></div>
-    <div class="warnbox" style="margin-top:4px">💡 Reihenfolge mit Grund: Mundhygiene <b>vor</b> dem Trinken → du schluckst keine über Nacht angesammelten Bakterien. Salz+Zitrone = Elektrolyte & Flüssigkeit nach der Nacht. Supplements <b>mit dem Essen</b>, nie nüchtern.</div>
+    <div class="warnbox" style="margin-top:4px">💡 Reihenfolge mit Grund: Mundhygiene <b>vor</b> dem Trinken → du schluckst keine über Nacht angesammelten Bakterien. Goldenes Wasser nüchtern = Elektrolyte + anti-entzündlicher Start (schwarzer Pfeffer macht das Kurkuma erst aufnehmbar). Supplements <b>mit dem Essen</b>, nie nüchtern.</div>
   </div>
 
   <!-- ===== TRAINING ===== -->
@@ -216,6 +226,7 @@
       <h1>🏋️ Heute dran:</h1><span class="badge" id="todayBadge">A</span>
     </div>
     <div class="sub" id="todaySub">Ganzkörper A · zuletzt: –</div>
+    <div class="warnbox" style="margin:0 0 12px;background:rgba(56,139,253,.1);border-color:rgba(56,139,253,.35);color:#a7c9ff">ℹ️ <b>Primärplan = Wochenplan (Tag-Tab):</b> Mo–Fr an den Geräten im Bürgerhaus via <b>Alpha Progression</b> (Push A · Pull A · Beine · Push B · Pull B). Dieses A/B-Park/Band-Workout ist dein <b>Fallback</b>, wenn du nicht ins Bürgerhaus kommst — draußen oder zuhause mit Bändern.</div>
     <div class="card">
       <div class="row between" style="margin-bottom:10px">
         <span style="font-size:13px;color:var(--muted)">Workout</span>
@@ -353,20 +364,37 @@
     </details>
 
     <details class="card" open>
-      <summary>🧘 Mobility (täglich 8–10 Min)</summary>
-      <div style="margin-top:12px">
-        <h3 style="color:var(--accent);margin:0 0 8px">Schulter rechts</h3>
-        <div class="mob">1. <b>Faszienrolle</b> oberer Rücken / BWS — 1–2 Min</div>
-        <div class="mob">2. <b>Brustdehnung</b> Türrahmen/Pfosten — 2×30 s</div>
-        <div class="mob">3. <b>Band Außenrotation</b> — 2×15</div>
-        <div class="mob">4. <b>Cross-Body</b> Schulterdehnung — 2×30 s</div>
-        <div class="mob">5. <b>Wall Slides</b> — 2×10</div>
-        <h3 style="color:var(--accent);margin:14px 0 8px">Unterer Rücken</h3>
-        <div class="mob">1. <b>Faszienrolle</b> Gesäß+Oberschenkel — 1–2 Min</div>
-        <div class="mob">2. <b>Cat-Cow</b> — 10×</div>
-        <div class="mob">3. <b>Knie-zur-Brust</b> + Rotation — 2×30 s</div>
-        <div class="mob">4. <b>Hüftbeuger-Dehnung</b> — 2×30 s <span style="color:var(--warn)">← versteckte Ursache</span></div>
-        <div class="mob">5. <b>Bird-Dog + Dead Bug</b></div>
+      <summary>🧘 Mobility-Routine (täglich · 15–20 Min)</summary>
+      <div style="margin-top:10px">
+        <div class="sub" style="margin:0 0 12px">Deine große tägliche Routine — wach werden + Schulter (Upper Cross / Innenrotation) & unterer Rücken öffnen. Der Reihe nach durchgehen. Haltedehnungen ruhig atmen, nie in den Schmerz. Block 2 ist dein Pflicht-Reha-Teil.</div>
+
+        <h3 style="color:var(--accent2);margin:0 0 8px">① Wirbelsäule aufwecken · ~3 Min</h3>
+        <div class="mob">1. <b>Cat-Cow</b> — 8–10× langsam · einatmen Bogen, ausatmen Rundrücken. Weckt die ganze Wirbelsäule.</div>
+        <div class="mob">2. <b>Thread the Needle</b> (BWS-Rotation) — 5×/Seite · Vierfüßler, Arm unter dem Körper durchfädeln. Öffnet die Brustwirbelsäule.</div>
+        <div class="mob">3. <b>Liegender Spinal Twist</b> — 30 s/Seite · Knie zur Seite fallen lassen, Schultern bleiben am Boden.</div>
+
+        <h3 style="color:var(--accent);margin:16px 0 8px">② Schulter & Brust (Pflicht-Reha) · ~7 Min</h3>
+        <div class="mob">1. <b>Faszienrolle BWS</b> — 1–2 Min · oberer Rücken quer ausrollen, Brust öffnen. <span style="color:var(--warn)">Nicht den unteren Rücken rollen.</span></div>
+        <div class="mob">2. <b>Brustdehnung Türrahmen</b> — 2×30 s · Unterarm am Rahmen, sanft nach vorn lehnen. Gegen die Innenrotation.</div>
+        <div class="mob">3. <b>Band-Außenrotation</b> — 2×15 · Ellbogen am Körper fixiert, Unterarm nach außen. <b>Dein wichtigster Reha-Satz.</b></div>
+        <div class="mob">4. <b>Wall Slides / Wall Angels</b> — 2×10 · Rücken & Arme an die Wand, langsam hoch/runter ohne abzuheben.</div>
+        <div class="mob">5. <b>Cross-Body Schulterdehnung</b> — 30 s/Seite · Arm sanft vor der Brust ziehen.</div>
+        <div class="mob">6. <b>Chin Tucks</b> — 10× · Kinn gerade zurückziehen (Doppelkinn). Gegen den Nackenvorhalt vom Upper Cross.</div>
+
+        <h3 style="color:var(--blue);margin:16px 0 8px">③ Unterer Rücken & Hüfte · ~7 Min</h3>
+        <div class="mob">1. <b>Faszienrolle Gesäß + Oberschenkel</b> — 1–2 Min · löst die Spannung, die am unteren Rücken zieht.</div>
+        <div class="mob">2. <b>Knie-zur-Brust + Rotation</b> — 30 s/Seite · sanft Richtung Schulter ziehen, dann zur Seite drehen.</div>
+        <div class="mob">3. <b>Hüftbeuger-Dehnung</b> (Ausfallschritt / Couch-Stretch) — 30 s/Seite <span style="color:var(--warn)">← oft DIE versteckte Ursache</span></div>
+        <div class="mob">4. <b>90/90 Hüft-Rotation</b> — 5×/Seite · im Sitzen beide Knie 90°, von Seite zu Seite kippen.</div>
+        <div class="mob">5. <b>Glute Bridge</b> — 12× · Hüfte hoch, Gesäß fest anspannen. Starke Glutes entlasten den Rücken.</div>
+        <div class="mob">6. <b>Bird-Dog</b> 8×/Seite + <b>Dead Bug</b> 8×/Seite · Stabi UND Mobility — Core hält neutral.</div>
+
+        <h3 style="color:var(--purple);margin:16px 0 8px">④ Beine & Cooldown · ~2 Min</h3>
+        <div class="mob">1. <b>Deep Squat Hold</b> — 60 s · tief in die Hocke, Ellbogen drücken die Knie auseinander, Brust hoch.</div>
+        <div class="mob">2. <b>Sprunggelenk-Mobilisation</b> — 10×/Seite · Knie über die Zehen schieben, Ferse bleibt am Boden.</div>
+        <div class="mob">3. <b>Child's Pose</b> — 60 s · lang machen, tief in den Rücken atmen. Runterkommen.</div>
+
+        <div class="warnbox" style="margin:14px 0 0">💡 An <b>Trainingstagen</b> reicht vor dem Workout Block ① + ② (Schulter scharf machen). Die volle Routine ist die Morgen-Routine. Den Pausen-/Halte-Timer findest du unten rechts ⏱️.</div>
       </div>
     </details>
 
@@ -379,6 +407,19 @@
         <div class="tip"><b>Schlaf 7–8 h:</b> Muskel wächst in der Erholung. Ashwagandha+Magnesium helfen.</div>
         <div class="tip"><b>Deload</b> alle 6–8 Wochen: halbe Sätze.</div>
         <div class="tip"><b>Konstanz &gt; Intensität.</b></div>
+      </div>
+    </details>
+
+    <details class="card" open>
+      <summary>💊 Supplement-Timing (kompletter Stack)</summary>
+      <div style="margin-top:12px">
+        <div class="sub" style="margin:0 0 10px">Wann was — mit Grund. ⭐ = deine 3 Neuen (Kreatin, Kollagen, Weight Gainer).</div>
+        <div class="tip"><b>🟡 Morgens nüchtern:</b> Goldenes Wasser — keine Supps (die kommen mit Essen/Shake).</div>
+        <div class="tip"><b>🥤 Pre-Workout · 60–90 Min vorher:</b><br>⭐ <b>Kollagen 1 Scoop + Vitamin C.</b> Studienlage (Shaw et al.): Kollagen + Vit C ~60 Min vor Belastung lädt Sehnen & Bänder mit Baustoffen, genau wenn die Durchblutung hoch ist — <b>ideal für deine Schulter & Handgelenke.</b> Vitamin C ist Pflicht-Cofaktor, nie ohne.</div>
+        <div class="tip"><b>💪 Post-Workout · sofort:</b><br>⭐ <b>Weight Gainer 1 Scoop</b> — schnelle Carbs + Protein im anabolen Fenster, easy Kalorien-Überschuss für den Lean Bulk.<br>⭐ <b>Kreatin 5 g</b> — Timing fast egal, post-workout mit den Gainer-Carbs minimal besser. <b>JEDEN Tag</b> (auch Pausentage), damit die Speicher voll bleiben.</div>
+        <div class="tip"><b>☀️ Frühstück · mit Essen:</b> D3+K2, B-Komplex, Probiotika.</div>
+        <div class="tip"><b>🌙 Abends · 30–60 Min vor Bett:</b> Ashwagandha KSM-66, Magnesium Citrat. <b>~30 Min vor Schlaf:</b> Melatonin.</div>
+        <div class="warnbox" style="margin:10px 0 0">📌 <b>Pausentage:</b> kein Pre/Post-Shake → dann <b>Kreatin + Kollagen + Vitamin C zum Frühstück</b>. Weight Gainer nur, wenn du sonst die Kalorien nicht hältst (1 Shake zwischen den Mahlzeiten). Kreatin nie auslassen.</div>
       </div>
     </details>
 
@@ -461,28 +502,50 @@
 <script>
 /* ===================== DATA ===================== */
 const ROUTINE = [
-  {id:"r1", t:"Aufgewacht & ausgeschlafen", ic:"☀️", d:"Kein Wecker. Erst wenn der Körper erholt ist."},
-  {id:"r2", t:"Mundhygiene", ic:"🪥", d:"Zähne + Zunge reinigen — VOR dem ersten Schluck Wasser."},
-  {id:"r3", t:"Wasser mit Zitrone/Limette + Prise Salz", ic:"💧", d:"Rehydrieren nach der Nacht, Elektrolyte. Erst jetzt, nach der Mundhygiene."},
-  {id:"r4", t:"Dehnen / Mobility", ic:"🧘", d:"5–10 Min. Schulter + unterer Rücken zuerst.", jump:["mehr","Mobility öffnen"]},
-  {id:"r_mind", t:"Morgen-Mindset", ic:"🧠", d:"Kurz: 1 Win von gestern + heutiges Hauptziel laut sagen. Tag bewusst starten.", jump:["geist","Geist öffnen"]},
-  {id:"r5", t:"Energie-Shake / kleine Mahlzeit", ic:"🥤", d:"Leicht & schnell verfügbar – Energie fürs Training.", jump:["essen","Rezept ansehen"]},
-  {id:"r6", t:"Morgen-Supplements (mit dem Essen)", ic:"💊", d:"Nicht nüchtern – immer mit dem Shake/Essen einnehmen.",
-    supps:["D3 + K2","Vitamin C","B-Komplex","Kreatin 5 g","Probaflor (Probiotikum)"]},
-  {id:"r7", t:"Training", ic:"🏋️", d:"Zur Zeit, wo deine Energie am höchsten ist.", jump:["workout","Workout öffnen"]},
-  {id:"r8", t:"Post-Workout Mahlzeit kochen & essen", ic:"🍳", d:"Protein + Carbs direkt nach dem Training = Aufbau.", jump:["essen","Rezept ansehen"]},
-  {id:"r9", t:"Deep Work – KI-Business", ic:"💻", d:"Fokus-Block ohne Ablenkung. Wichtigste Aufgabe zuerst."},
+  {id:"r1", t:"Aufgewacht & ausgeschlafen", ic:"☀️", d:"⏱️ 0 Min · Kein Wecker — erst aufstehen, wenn der Körper erholt ist. 2 Min Tageslicht ans Fenster: startet Kreislauf & innere Uhr."},
+  {id:"r2", t:"Mundhygiene", ic:"🪥", d:"⏱️ +3 Min · Zähne + Zunge reinigen (Zungenschaber) — VOR dem ersten Schluck. So schluckst du die über Nacht angesammelten Bakterien nicht runter."},
+  {id:"r_gold", t:"Goldenes Wasser (nüchtern)", ic:"🟡", d:"⏱️ +5 Min · Warmes Wasser mit Zitrone, Prise Salz, Kurkuma, Ingwer, Zimt, schwarzem Pfeffer, Cayenne (+ optional Spirulina). Nüchtern trinken — Elektrolyte, Verdauung & anti-entzündlicher Kickstart. Schwarzer Pfeffer macht das Kurkuma erst aufnehmbar.", jump:["essen","Rezept ansehen"]},
+  {id:"r4", t:"Mobility / Dehnung — die große Routine", ic:"🧘", d:"⏱️ +10 Min · 15–20 Min die volle Routine: Schulter + BWS + unterer Rücken + Hüfte. Macht wach, wenn du noch antriebslos bist — und ist dein stärkster Hebel gegen Schulter/Rücken.", jump:["mehr","Mobility-Routine öffnen"]},
+  {id:"r_mind", t:"Kaffee + Morgen-Mindset (Terrasse)", ic:"☕", d:"⏱️ +30 Min · Kaffee auf der Terrasse. Dabei: 1 Win von gestern + heutiges Hauptziel laut sagen. Tag bewusst & ruhig starten.", jump:["geist","Geist öffnen"]},
+  {id:"r5", t:"Pre-Workout Shake + Kollagen", ic:"🥤", d:"⏱️ +45 Min · Energie-Shake mixen & trinken. Dazu Kollagen + Vitamin C — lädt 60–90 Min vor dem Training Sehnen & Bänder auf (top für deine Schulter & Handgelenke). Danach verdauen lassen, DANN trainieren.",
+    supps:["Kollagen 1 Scoop","Vitamin C (Acerola)"], jump:["essen","Rezept ansehen"]},
+  {id:"r6", t:"Frühstück + Morgen-Supplements", ic:"💊", d:"Mit dem Essen, nie nüchtern (D3 ist fettlöslich). An Pausentagen Kreatin + Kollagen + Vitamin C hierher ziehen.",
+    supps:["D3 + K2","B-Komplex","Probiotika"]},
+  {id:"r7", t:"Training (heute laut Wochenplan)", ic:"🏋️", d:"⏱️ ~60–90 Min nach dem Shake · Wenn deine Energie am höchsten ist. Heutiges Workout siehst du oben im Tag-Tab / in Alpha Progression.", jump:["workout","Wochenplan öffnen"]},
+  {id:"r_post", t:"Post-Workout Shake (sofort)", ic:"💪", d:"⏱️ Direkt nach dem letzten Satz · Weight Gainer + 5 g Kreatin im anabolen Fenster — Glykogen & Aminosäuren schnell auffüllen.",
+    supps:["Weight Gainer 1 Scoop","Kreatin 5 g"], jump:["essen","Rezept ansehen"]},
+  {id:"r8", t:"Post-Workout Mahlzeit", ic:"🍳", d:"⏱️ 30–60 Min später · Power-Teller: Protein + Carbs + Gemüse. Die richtige Mahlzeit zum Aufbau.", jump:["essen","Rezept ansehen"]},
+  {id:"r9", t:"Deep Work – KI-Business", ic:"💻", d:"Fokus-Block ohne Ablenkung. Wichtigste NexaPro-Aufgabe zuerst."},
   {id:"r_precall", t:"Vor Kundengespräch: Pre-Call-Routine", ic:"📞", d:"Nur an Gesprächstagen: Power-Pose, Box-Breathing, Reframe — dann ruhig rein.", jump:["geist","Pre-Call öffnen"]},
-  {id:"r10", t:"Abend-Supplements", ic:"🌙", d:"Für Schlaf & Recovery, ~30–60 Min vor dem Bett.",
+  {id:"r10", t:"Abend-Supplements", ic:"🌙", d:"~30–60 Min vor dem Bett — für Schlaf & Recovery.",
     supps:["Ashwagandha KSM-66","Magnesium Citrat"]},
-  {id:"r11", t:"Schlafvorbereitung", ic:"📖", d:"Screens runter, Lesen, Notizen schreiben, runterkommen."}
+  {id:"r_sleep", t:"Melatonin + Schlafvorbereitung", ic:"😴", d:"Melatonin ~30 Min vor dem Einschlafen. Screens runter, Lesen, runterkommen. Ziel 7–8 h — Muskel & Testosteron wachsen im Schlaf."}
+];
+
+/* Wochenplan: Mo–Fr Bürgerhaus (Alpha Progression), Sa Mobility, So frei. Reihenfolge ab Montag. */
+const WEEKPLAN = [
+  {d:"Mo", n:"Push A", f:"Brust & Schultern · Bürgerhaus", ic:"💪"},
+  {d:"Di", n:"Pull A", f:"Rücken & Bizeps · Bürgerhaus", ic:"🏋️"},
+  {d:"Mi", n:"Beine & Core", f:"Kraft & Stabilität · Bürgerhaus", ic:"⚡"},
+  {d:"Do", n:"Push B", f:"Trizeps & Schultern · Bürgerhaus", ic:"🔥"},
+  {d:"Fr", n:"Pull B", f:"Muscle-Up Prep · Bürgerhaus", ic:"🚀"},
+  {d:"Sa", n:"Mobility & Core", f:"Aktive Erholung · zuhause", ic:"🧘"},
+  {d:"So", n:"Ruhetag", f:"Komplett frei · Spaziergang", ic:"😴"}
 ];
 
 const MEALS = [
-  {when:"Vor dem Training · leicht", name:"🥤 Energie-Shake",
-   ing:"1 Banane · 50 g Haferflocken · 250 ml Milch oder Kefir · 1 EL Mandel-/Erdnussmus · 1 Handvoll Beeren · Prise Zimt · optional 1 TL Honig",
-   prep:"Alles in den Mixer, 30–40 s mixen. Mit den Morgen-Supplements trinken (nicht nüchtern). ⏱️ ~2 Min.",
-   why:"Schnelle + langsame Carbs für Energie, Zimt stabilisiert den Blutzucker, keine Seed-Oils."},
+  {when:"Morgens nüchtern · Kickstart", name:"🟡 Goldenes Wasser",
+   ing:"300 ml warmes Wasser · Saft ½ Zitrone · 1 Prise Meersalz · ½ TL Kurkuma · ½ TL frischer Ingwer (gerieben) · ¼ TL Zimt · 1 Prise schwarzer Pfeffer · 1 Prise Cayenne · optional 1 TL Spirulina",
+   prep:"Alles in eine Tasse warmes (nicht kochendes) Wasser geben, verrühren, nüchtern trinken. ⏱️ ~3 Min.",
+   why:"Elektrolyte & Flüssigkeit nach der Nacht, anti-entzündlich (Kurkuma+Ingwer), Stoffwechsel-Kick (Cayenne). Schwarzer Pfeffer macht das Curcumin erst bioverfügbar — nie weglassen. Spirulina liefert Eisen & B-Vitamine."},
+  {when:"Vor dem Training · 60–90 Min vorher", name:"🥤 Pre-Workout Shake",
+   ing:"1 große Banane · 3 EL Haferpops (oder 50 g Haferflocken) · 1 EL Erdnussmus · 250 ml Milch (Berchtesgadener 3,5 %) · 1 Handvoll Beeren · 1 TL Honig",
+   prep:"Alles 30–40 s mixen. 60–90 Min VOR dem Training trinken, damit der Magen zum Trainieren leer genug ist. ⏱️ ~2 Min.",
+   why:"~480 kcal, schnelle + langsame Carbs als Trainings-Treibstoff. Bei empfindlichem Magen das Erdnussmus weglassen — Fett verlangsamt die Verdauung."},
+  {when:"Direkt nach dem Training · anaboles Fenster", name:"💪 Post-Workout Shake",
+   ing:"1 Scoop Applied Nutrition Critical Mass (~50 g) · 400 ml Milch · 1 Banane · 1–2 Datteln · 5 g Kreatin · optional 1 TL Honig",
+   prep:"Alles mixen, direkt nach dem letzten Satz trinken. ⏱️ ~2 Min.",
+   why:"Schneller Protein-Hit + Carbs füllen Glykogen & starten die Reparatur. KEIN Erdnussmus hier — Fett würde die Protein-Aufnahme genau jetzt bremsen. Kreatin post-workout optimal."},
   {when:"Nach dem Training · Hauptmahlzeit", name:"🍳 Power-Teller",
    ing:"3–4 Eier · Handvoll Spinat · ½ Paprika · 1 Tomate · 150–200 g Kartoffeln oder Reis · ½ Avocado · Olivenöl oder Butter · Salz/Pfeffer",
    prep:"Kartoffeln/Reis kochen. Gemüse in Butter/Olivenöl andünsten, Eier als Rührei/Omelett dazu. Mit Avocado anrichten. ⏱️ ~15–20 Min.",
@@ -504,7 +567,8 @@ const SHOP = {
   "Kohlenhydrate":["Haferflocken","Reis","Kartoffeln / Süßkartoffeln","Vollkornbrot"],
   "Protein":["Lachsfilet","Hähnchenbrust"],
   "Fette & Nüsse":["Olivenöl","Kokosöl","Mandel-/Erdnussmus","Nüsse / Mandeln"],
-  "Gewürze & Sonstiges":["Meersalz","Pfeffer","Zimt","Kurkuma","Ingwer","Honig"]
+  "Gewürze & Sonstiges":["Meersalz","Schwarzer Pfeffer","Cayennepfeffer","Zimt","Kurkuma","Ingwer (frisch)","Honig"],
+  "Shake & Supplements":["Haferpops","Datteln","Spirulina-Pulver","Kreatin 5 g","Kollagen-Pulver","Weight Gainer (Critical Mass)"]
 };
 
 const CONDITIONING = [
@@ -664,6 +728,23 @@ function toggleRoutine(id){
 }
 function resetDay(){ save("dayState",{date:todayStr(),items:{}}); renderRoutine(); flash("🌅 Neuer Tag gestartet"); }
 function goJump(v){ const btn=document.querySelector(`.tabs button[data-v="${v}"]`); showView(v,btn); }
+function renderWeekplan(){
+  const el=document.getElementById("weekplanCard"); if(!el)return;
+  const names=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+  const dow=new Date().getDay();              // 0=So..6=Sa
+  const idx=(dow+6)%7;                          // 0=Mo..6=So
+  const t=WEEKPLAN[idx];
+  el.innerHTML=`<div class="card" style="padding:12px 14px">
+    <div class="row between" style="margin-bottom:8px">
+      <span style="font-size:13px;color:var(--muted)">Heute · ${names[dow]}</span>
+      <span class="badge badgeA">${t.ic} ${t.n}</span>
+    </div>
+    <div class="wk-row">`+
+    WEEKPLAN.map((w,i)=>`<div class="wk-day${i===idx?' on':''}"><span class="wk-d">${w.d}</span><span class="wk-ic">${w.ic}</span><span class="wk-n">${w.n}</span></div>`).join("")+
+    `</div>
+    <div class="sub" style="margin:9px 0 0">${t.ic} <b style="color:var(--txt)">${t.n}</b> — ${t.f}. Geräte-Training Mo–Fr via <b>Alpha Progression</b>, Sa Mobility, So frei.</div>
+  </div>`;
+}
 
 /* ===================== MEALS ===================== */
 function renderMeals(){
@@ -1106,7 +1187,7 @@ function toggleSound(){const on=!sndOn(); save("soundOn",on); renderSound(); if(
 (function init(){
   if(load("wkStartDate",null)===null) save("wkStartDate",new Date().toISOString());  // Programmstart = heute
   S.mode=load("wkMode","park"); S.sets=load("wkSets",2); S.wo=suggestNext();
-  renderRoutine(); renderMeals(); renderShop();
+  renderRoutine(); renderWeekplan(); renderMeals(); renderShop();
   renderHeader(); renderSeg(); renderSetupOverview(); renderHistory(); renderPhaseHint();
   renderPrecall(); renderReframes(); renderObjections(); renderWins(); renderConditioning();
   renderWeight(); renderSkills(); renderSound();
