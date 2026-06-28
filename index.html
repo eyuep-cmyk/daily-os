@@ -193,6 +193,9 @@
   .wk-ic{font-size:16px;line-height:1}
   .wk-n{font-size:9px;color:var(--muted);line-height:1.1}
   .wk-day.on .wk-n{color:var(--txt)}
+  .wk-day{cursor:pointer}
+  .wk-day.today:not(.on){border-color:var(--accent2)}
+  .wk-day.today:not(.on) .wk-d{color:var(--accent2)}
 </style>
 </head>
 <body>
@@ -213,6 +216,10 @@
       </div>
     </div>
     <div id="weekplanCard"></div>
+    <details class="card">
+      <summary>📈 Skill-Progression (L-Sit · Muscle-Up)</summary>
+      <div id="skillTracks" style="margin-top:10px"></div>
+    </details>
     <div id="routineList"></div>
     <div class="warnbox" style="margin-top:4px">💡 Reihenfolge mit Grund: Mundhygiene <b>vor</b> dem Trinken → du schluckst keine über Nacht angesammelten Bakterien. Goldenes Wasser nüchtern = Elektrolyte + anti-entzündlicher Start (schwarzer Pfeffer macht das Kurkuma erst aufnehmbar). Supplements <b>mit dem Essen</b>, nie nüchtern.</div>
   </div>
@@ -226,7 +233,7 @@
       <h1>🏋️ Heute dran:</h1><span class="badge" id="todayBadge">A</span>
     </div>
     <div class="sub" id="todaySub">Ganzkörper A · zuletzt: –</div>
-    <div class="warnbox" style="margin:0 0 12px;background:rgba(56,139,253,.1);border-color:rgba(56,139,253,.35);color:#a7c9ff">ℹ️ <b>Primärplan = Wochenplan (Tag-Tab):</b> Mo–Fr an den Geräten im Bürgerhaus via <b>Alpha Progression</b> (Push A · Pull A · Beine · Push B · Pull B). Dieses A/B-Park/Band-Workout ist dein <b>Fallback</b>, wenn du nicht ins Bürgerhaus kommst — draußen oder zuhause mit Bändern.</div>
+    <div class="warnbox" style="margin:0 0 12px;background:rgba(56,139,253,.1);border-color:rgba(56,139,253,.35);color:#a7c9ff">ℹ️ <b>Primärplan = Wochenplan (Tag-Tab):</b> Mo/Di/Do an den Geräten im Bürgerhaus via <b>Alpha Progression</b> (Beine · Push A · Pull A), Mi/Fr Ruhetag, Sa Park/Home Skills+Mobility. Dieses A/B-Park/Band-Workout ist dein <b>Fallback</b>, wenn du nicht ins Bürgerhaus kommst — draußen oder zuhause mit Bändern.</div>
     <div class="card">
       <div class="row between" style="margin-bottom:10px">
         <span style="font-size:13px;color:var(--muted)">Workout</span>
@@ -414,12 +421,17 @@
       <summary>💊 Supplement-Timing (kompletter Stack)</summary>
       <div style="margin-top:12px">
         <div class="sub" style="margin:0 0 10px">Wann was — mit Grund. ⭐ = deine 3 Neuen (Kreatin, Kollagen, Weight Gainer).</div>
-        <div class="tip"><b>🟡 Morgens nüchtern:</b> Goldenes Wasser — keine Supps (die kommen mit Essen/Shake).</div>
-        <div class="tip"><b>🥤 Pre-Workout · 60–90 Min vorher:</b><br>⭐ <b>Kollagen 1 Scoop + Vitamin C.</b> Studienlage (Shaw et al.): Kollagen + Vit C ~60 Min vor Belastung lädt Sehnen & Bänder mit Baustoffen, genau wenn die Durchblutung hoch ist — <b>ideal für deine Schulter & Handgelenke.</b> Vitamin C ist Pflicht-Cofaktor, nie ohne.</div>
-        <div class="tip"><b>💪 Post-Workout · sofort:</b><br>⭐ <b>Weight Gainer 1 Scoop</b> — schnelle Carbs + Protein im anabolen Fenster, easy Kalorien-Überschuss für den Lean Bulk.<br>⭐ <b>Kreatin 5 g</b> — Timing fast egal, post-workout mit den Gainer-Carbs minimal besser. <b>JEDEN Tag</b> (auch Pausentage), damit die Speicher voll bleiben.</div>
-        <div class="tip"><b>☀️ Frühstück · mit Essen:</b> D3+K2, B-Komplex, Probiotika.</div>
-        <div class="tip"><b>🌙 Abends · 30–60 Min vor Bett:</b> Ashwagandha KSM-66, Magnesium Citrat. <b>~30 Min vor Schlaf:</b> Melatonin.</div>
-        <div class="warnbox" style="margin:10px 0 0">📌 <b>Pausentage:</b> kein Pre/Post-Shake → dann <b>Kreatin + Kollagen + Vitamin C zum Frühstück</b>. Weight Gainer nur, wenn du sonst die Kalorien nicht hältst (1 Shake zwischen den Mahlzeiten). Kreatin nie auslassen.</div>
+
+        <div class="tip" style="background:rgba(255,107,53,.1);border-color:rgba(255,107,53,.35)"><b>🏋️ Trainingstag (Mo · Di · Do · Sa)</b></div>
+        <div class="tip"><b>☀️ Morgens · mit Frühstück:</b> D3+K2, Vitamin C, B-Komplex, Probiotika. Nie nüchtern (D3 ist fettlöslich).</div>
+        <div class="tip"><b>🥤 Pre-Workout · ~90 Min vorher:</b><br>Shake + ⭐ <b>Kollagen 1 Scoop + Vitamin C.</b> Studienlage (Shaw et al.): Kollagen + Vit C ~60 Min vor Belastung lädt Sehnen & Bänder mit Baustoffen, genau wenn die Durchblutung hoch ist — <b>ideal für deine Schulter & Handgelenke.</b> Vitamin C ist Pflicht-Cofaktor, nie ohne.</div>
+        <div class="tip"><b>💪 Post-Workout · sofort:</b><br>⭐ <b>Critical Mass 1 Scoop</b> — schnelle Carbs + Protein im anabolen Fenster, easy Kalorien-Überschuss für den Lean Bulk.<br>⭐ <b>Kreatin 5 g</b> — post-workout mit den Carbs minimal besser.</div>
+        <div class="tip"><b>🌙 Abends · 30–60 Min vor Bett:</b> Ashwagandha KSM-66, Magnesium Citrat. <b>~30 Min vor Schlaf:</b> Depot-Melatonin.</div>
+
+        <div class="tip" style="margin-top:14px;background:rgba(56,139,253,.1);border-color:rgba(56,139,253,.35)"><b>😴 Ruhetag (Mi · Fr · So)</b></div>
+        <div class="tip"><b>☀️ Morgens · mit Frühstück:</b> D3+K2, Vitamin C, B-Komplex, Probiotika <b>+ Kreatin 5 g</b>. Kreatin <b>JEDEN Tag</b> (auch Ruhetage), damit die Speicher voll bleiben.</div>
+        <div class="warnbox" style="margin:6px 0 0">⚠️ <b>Kein Kollagen an Ruhetagen</b> — wirkt am stärksten ~60 Min vor Belastung, ohne Training kein Nutzen. Kein Pre/Post-Shake. Weight Gainer nur, wenn du sonst die Kalorien nicht hältst (1 Shake zwischen den Mahlzeiten).</div>
+        <div class="tip" style="margin-top:6px"><b>🌙 Abends · 30–60 Min vor Bett:</b> Ashwagandha KSM-66, Magnesium Citrat. <b>~30 Min vor Schlaf:</b> Depot-Melatonin.</div>
       </div>
     </details>
 
@@ -522,15 +534,54 @@ const ROUTINE = [
   {id:"r_sleep", t:"Melatonin + Schlafvorbereitung", ic:"😴", d:"Melatonin ~30 Min vor dem Einschlafen. Screens runter, Lesen, runterkommen. Ziel 7–8 h — Muskel & Testosteron wachsen im Schlaf."}
 ];
 
-/* Wochenplan: Mo–Fr Bürgerhaus (Alpha Progression), Sa Mobility, So frei. Reihenfolge ab Montag. */
+/* Wochenplan: Mo/Di/Do Bürgerhaus (Alpha Progression), Mi/Fr Ruhetag, Sa Skills+Mobility (Park/Home), So frei. Reihenfolge ab Montag.
+   Jeder Tag: {d, ic, n, f, blocks:[{t, items:[]}]}. Sa behält zusätzlich sat:{park,home}.
+   WICHTIG: Das "Warm-up (vor Training)" je Trainingstag ist NICHT die tägliche Morgen-Mobility (eigene Routine im Mehr-Tab) — nur kurzes, übungsspezifisches Aufwärmen. */
+const RUHE_SUPPS = [
+  {t:"Supplements morgens", items:["D3+K2","Vitamin C","B-Complex","Probiotika","Kreatin","KEIN Kollagen an Ruhetagen"]},
+  {t:"Abends", items:["Ashwagandha","Magnesium Citrat"]},
+  {t:"30 Min vor Schlaf", items:["Depot-Melatonin"]}
+];
 const WEEKPLAN = [
-  {d:"Mo", n:"Push A", f:"Brust & Schultern · Bürgerhaus", ic:"💪"},
-  {d:"Di", n:"Pull A", f:"Rücken & Bizeps · Bürgerhaus", ic:"🏋️"},
-  {d:"Mi", n:"Beine & Core", f:"Kraft & Stabilität · Bürgerhaus", ic:"⚡"},
-  {d:"Do", n:"Push B", f:"Trizeps & Schultern · Bürgerhaus", ic:"🔥"},
-  {d:"Fr", n:"Pull B", f:"Muscle-Up Prep · Bürgerhaus", ic:"🚀"},
-  {d:"Sa", n:"Mobility & Core", f:"Aktive Erholung · zuhause", ic:"🧘"},
-  {d:"So", n:"Ruhetag", f:"Komplett frei · Spaziergang", ic:"😴"}
+  {d:"Mo", n:"Beine & Core", f:"Kraft & Stabilität · Bürgerhaus", ic:"⚡", blocks:[
+    {t:"Warm-up (vor Training, 5–10 Min)", items:["Bodyweight Squats 2×15","Leg Swings 10×/Seite","Hüftkreisen 10×/Richtung"]},
+    {t:"Haupt", items:["via Alpha Progression (Bein-Workout)"]},
+    {t:"L-Sit Block (10 Min)", items:["Tuck Hold 3×max (Ziel 10s)","Compression Sits 3×15","Hollow Body Hold 3×20s"]}
+  ]},
+  {d:"Di", n:"Push A", f:"Brust & Schultern · Bürgerhaus", ic:"💪", blocks:[
+    {t:"Warm-up (vor Training, 5–10 Min)", items:["Schulter CARs 5×/Seite","Arm Circles 10× vor/zurück","Band Pull-aparts 2×15","Leichte Push-ups 1×10"]},
+    {t:"Haupt", items:["via Alpha Progression (Push)"]},
+    {t:"Muscle-Up DRUCK", items:["Dips 3×5-8 (tief, sauber)","Support Hold (oben Dip-Stange) 3×20s"]}
+  ]},
+  {d:"Mi", n:"Ruhetag", f:"Erholung · frei, optional Spaziergang", ic:"😴", blocks:RUHE_SUPPS},
+  {d:"Do", n:"Pull A", f:"Rücken & Bizeps · Bürgerhaus", ic:"🏋️", blocks:[
+    {t:"Warm-up (vor Training, 5–10 Min)", items:["Dead Hang 1×20s","Scapular Pulls 2×8","Band Pull-aparts 2×15"]},
+    {t:"ZUERST (frisch) — Muscle-Up ZUG", items:["Explosive Pull-ups 3×3-5 (zur Brust)","Scapular Pulls 3×8"]},
+    {t:"Danach Haupt", items:["via Alpha Progression (Pull)"]}
+  ]},
+  {d:"Fr", n:"Ruhetag", f:"Erholung · frei, optional Spaziergang", ic:"😴", blocks:RUHE_SUPPS},
+  {d:"Sa", n:"Skills & Mobility", f:"Park ODER Home · wetterabhängig", ic:"🤸",
+    blocks:[
+      {t:"Warm-up (10 Min)", items:["Schulter CARs 5×/Seite","Dead Bug 3×10","Arm Circles 10×"]},
+      {t:"L-Sit Integration (15 Min)", items:["Aktuelle Progressionsstufe halten + Compression"]},
+      {t:"Muscle-Up Integration (15 Min)", items:["Negatives / Transition-Drills"]},
+      {t:"Mobility (15 Min)", items:["Hüftbeuger 60s/Seite","Thoraxrotation 10×/Seite","Pigeon 60s/Seite","Lat-Stretch 45s/Seite"]}
+    ],
+    sat:{
+      park:{ic:"🌳", n:"Park-Session", f:"Calisthenics Skills draußen: Klimmzüge, lockere Dips, Hang- & Scapula-Arbeit, Skill-Practice (L-Sit-/Muscle-Up-Prep) + Mobility. Frische Luft, Stangen."},
+      home:{ic:"🏠", n:"Home-Alternative", f:"Schlechtes Wetter? Skills zuhause: Bänder-Rows, Push-up-Skills, Hollow Body, Scapula Push-ups + die volle Mobility-Routine."}
+    }},
+  {d:"So", n:"Ruhetag", f:"Komplett frei · Spaziergang", ic:"😴", blocks:RUHE_SUPPS}
+];
+/* Skill-Progression: antippbare Stufen, Stand in localStorage `skillStage`, gespiegelt in den Sa-Block. */
+const SKILL_TRACKS = [
+  {id:"lsit", t:"L-Sit", ic:"🦵", stages:[
+    "Tuck Hold (Knie an Brust)","Tuck L-sit (Füße vom Boden)",
+    "Advanced Tuck (Knie tiefer)","One-Leg L-sit (ein Bein gestreckt)","Full L-sit (beide Beine gestreckt)"]},
+  {id:"muscleup", t:"Muscle-Up", ic:"💪", stages:[
+    "Foundation (5-8 Pull-ups + 5-8 Dips)","Scapular-Kraft (Scapular Pulls)",
+    "Explosive Pull-ups (zur Brust)","Negative Muscle-Ups",
+    "Transition-Drills","Erster Muscle-Up"]}
 ];
 
 const MEALS = [
@@ -695,6 +746,8 @@ function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function todayStr(){return new Date().toLocaleDateString("de-DE",{weekday:"short",day:"2-digit",month:"2-digit"})}
 
 let S={wo:"A",mode:"park",sets:2,done:{},reps:{},training:"setup",cur:0,cset:0,phase:"work",psecs:0};
+let WK_SEL=null;        // gewählter Wochentag im Wochenplan (0=Mo..6=So); null ⇒ heute. Nicht persistiert.
+let WK_SHIFT_OPEN=false; // Verschiebe-Picker offen?
 
 /* ===================== ROUTINE ===================== */
 function getDayState(){
@@ -728,23 +781,113 @@ function toggleRoutine(id){
 }
 function resetDay(){ save("dayState",{date:todayStr(),items:{}}); renderRoutine(); flash("🌅 Neuer Tag gestartet"); }
 function goJump(v){ const btn=document.querySelector(`.tabs button[data-v="${v}"]`); showView(v,btn); }
+const WK_NAMES_LONG=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+function todayIdx(){ return (new Date().getDay()+6)%7; }  // 0=Mo..6=So
+function isoToday(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+/* Verschiebung: nur für heute gültig, läuft danach automatisch ab. */
+function getOverride(){
+  const o=load("dayOverride",null);
+  if(!o){ return null; }
+  if(o.datum!==isoToday()){ localStorage.removeItem("dayOverride"); return null; }
+  const quelleIdx=WEEKPLAN.findIndex(w=>w.d===o.quelle);
+  const zielIdx=WEEKPLAN.findIndex(w=>w.d===o.ziel);
+  if(quelleIdx<0||zielIdx<0){ localStorage.removeItem("dayOverride"); return null; }
+  return {quelleIdx, zielIdx, quelle:o.quelle, ziel:o.ziel,
+          contentIndexFor:(slot)=> slot===zielIdx?quelleIdx:slot };
+}
+function selectDay(i){ WK_SEL=i; WK_SHIFT_OPEN=false; renderWeekplan(); }
+function setSatMode(m){ save("wkSatMode",m); renderWeekplan(); }
+function shiftDay(quelleD, zielD){ save("dayOverride",{datum:isoToday(),quelle:quelleD,ziel:zielD}); WK_SHIFT_OPEN=false; renderWeekplan(); flash("↪ "+quelleD+" → "+zielD+" verschoben"); }
+function resetShift(){ localStorage.removeItem("dayOverride"); WK_SHIFT_OPEN=false; renderWeekplan(); flash("↺ Verschiebung aufgehoben"); }
+function toggleShiftPicker(){ WK_SHIFT_OPEN=!WK_SHIFT_OPEN; renderWeekplan(); }
+
 function renderWeekplan(){
   const el=document.getElementById("weekplanCard"); if(!el)return;
-  const names=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
-  const dow=new Date().getDay();              // 0=So..6=Sa
-  const idx=(dow+6)%7;                          // 0=Mo..6=So
-  const t=WEEKPLAN[idx];
+  const tIdx=todayIdx();
+  const sel=WK_SEL==null?tIdx:WK_SEL;
+  const ov=getOverride();
+  const tToday=WEEKPLAN[ov?ov.contentIndexFor(tIdx):tIdx];
   el.innerHTML=`<div class="card" style="padding:12px 14px">
     <div class="row between" style="margin-bottom:8px">
-      <span style="font-size:13px;color:var(--muted)">Heute · ${names[dow]}</span>
-      <span class="badge badgeA">${t.ic} ${t.n}</span>
+      <span style="font-size:13px;color:var(--muted)">Heute · ${WK_NAMES_LONG[new Date().getDay()]}</span>
+      <span class="badge badgeA">${tToday.ic} ${tToday.n}</span>
     </div>
     <div class="wk-row">`+
-    WEEKPLAN.map((w,i)=>`<div class="wk-day${i===idx?' on':''}"><span class="wk-d">${w.d}</span><span class="wk-ic">${w.ic}</span><span class="wk-n">${w.n}</span></div>`).join("")+
-    `</div>
-    <div class="sub" style="margin:9px 0 0">${t.ic} <b style="color:var(--txt)">${t.n}</b> — ${t.f}. Geräte-Training Mo–Fr via <b>Alpha Progression</b>, Sa Mobility, So frei.</div>
+    WEEKPLAN.map((w,i)=>`<div class="wk-day${i===sel?' on':''}${i===tIdx?' today':''}" onclick="selectDay(${i})"><span class="wk-d">${w.d}</span><span class="wk-ic">${w.ic}</span><span class="wk-n">${w.n}</span></div>`).join("")+
+    `</div>`+renderDayDetail(sel, ov, tIdx)+`
   </div>`;
 }
+/* Detail-Ansicht für einen gewählten Slot. Bei aktiver Verschiebung zeigt der Ziel-Slot den Quell-Inhalt. */
+function renderDayDetail(slotIdx, ov, tIdx){
+  const contentIdx=ov?ov.contentIndexFor(slotIdx):slotIdx;
+  const verschoben=contentIdx!==slotIdx;
+  const t=WEEKPLAN[contentIdx];
+  let h=`<div style="margin-top:12px;border-top:1px solid var(--line);padding-top:12px">`;
+  h+=`<div class="row between" style="margin-bottom:6px"><h3 style="margin:0">${t.ic} ${esc(t.n)}</h3>`+
+     (slotIdx===tIdx&&!verschoben?`<span class="badge badgeA">heute</span>`:"")+`</div>`;
+  let ort=t.f;
+  // Sa: Park/Home-Toggle (folgt verschobenem Sa-Inhalt in den Ziel-Slot)
+  let satToggle="";
+  if(t.sat){
+    const mode=load("wkSatMode","park")==="home"?"home":"park";
+    const s=t.sat[mode];
+    ort=s.f;
+    satToggle=`<div class="seg blue" style="margin:8px 0 2px">
+        <button class="${mode==='park'?'on':''}" onclick="setSatMode('park')">🌳 Park</button>
+        <button class="${mode==='home'?'on':''}" onclick="setSatMode('home')">🏠 Home</button>
+      </div>`;
+  }
+  h+=`<div class="sub" style="margin:0 0 4px">${esc(ort)}</div>`+satToggle;
+  if(verschoben){ h+=`<div class="warnbox" style="margin:8px 0">↪ Verschoben von <b>${esc(WK_NAMES_LONG[(contentIdx+1)%7])}</b> (${t.d})</div>`; }
+  // Blöcke generisch
+  (t.blocks||[]).forEach(b=>{
+    h+=`<div class="shopcat">${esc(b.t)}</div>`;
+    b.items.forEach(it=>{ h+=`<div class="tip">${esc(it)}</div>`; });
+  });
+  // Sa: aktuellen Skill-Stand spiegeln
+  if(t.sat){
+    const ss=load("skillStage",{lsit:0,muscleup:0});
+    h+=`<div class="shopcat">Aktueller Skill-Stand</div>`;
+    SKILL_TRACKS.forEach(tr=>{
+      const cur=Math.min(ss[tr.id]||0, tr.stages.length-1);
+      h+=`<div class="tip">${tr.ic} <b>${esc(tr.t)}</b> — Stufe ${cur+1}/${tr.stages.length}: ${esc(tr.stages[cur])}</div>`;
+    });
+  }
+  // Aktionen: Tag verschieben / aufheben (Quelle ist immer der heutige Tag)
+  h+=`<div class="row" style="gap:8px;margin-top:12px">`;
+  h+=`<button class="btn-ghost" style="flex:1" onclick="toggleShiftPicker()">↪ Tag verschieben</button>`;
+  if(ov){ h+=`<button class="btn-ghost" style="flex:1" onclick="resetShift()">↺ Aufheben</button>`; }
+  h+=`</div>`;
+  if(WK_SHIFT_OPEN){
+    const src=WEEKPLAN[tIdx]; // Quelle = heutiger Tag
+    h+=`<div class="card" style="margin-top:8px;padding:11px 12px">
+      <div class="sub" style="margin:0 0 8px">Heutigen Inhalt (<b>${esc(src.ic+" "+src.n)}</b>) auf welchen Tag legen?</div>
+      <div class="wk-row" style="flex-wrap:wrap">`+
+      WEEKPLAN.map((w,i)=> i===tIdx?"":`<button class="btn-ghost" style="flex:1;min-width:42px;padding:8px 4px" onclick="shiftDay('${src.d}','${w.d}')">${w.d}</button>`).join("")+
+      `</div></div>`;
+  }
+  h+=`</div>`;
+  return h;
+}
+
+/* ===================== SKILL-PROGRESSION ===================== */
+function renderSkillTracks(){
+  const el=document.getElementById("skillTracks"); if(!el)return;
+  const ss=load("skillStage",{lsit:0,muscleup:0});
+  el.innerHTML=SKILL_TRACKS.map(tr=>{
+    const cur=Math.min(ss[tr.id]||0, tr.stages.length-1);
+    const stages=tr.stages.map((s,i)=>`<div class="reframe${i===cur?' on':''}" onclick="setSkillStage('${tr.id}',${i})">${i+1}. ${esc(s)}</div>`).join("");
+    return `<div class="card" style="margin-bottom:10px">
+      <div class="row between" style="margin-bottom:8px">
+        <h3 style="margin:0">${tr.ic} ${esc(tr.t)}</h3>
+        <span class="badge badgeA">Stufe ${cur+1}/${tr.stages.length}</span>
+      </div>
+      <div class="sub" style="margin:0 0 8px">Tippe deine aktuelle Stufe an — sie wird gespeichert & im Sa-Block gespiegelt.</div>
+      ${stages}
+    </div>`;
+  }).join("");
+}
+function setSkillStage(id,idx){ const ss=load("skillStage",{lsit:0,muscleup:0}); ss[id]=idx; save("skillStage",ss); renderSkillTracks(); renderWeekplan(); flash("📈 Stufe "+(idx+1)+" gesetzt"); }
 
 /* ===================== MEALS ===================== */
 function renderMeals(){
@@ -956,7 +1099,7 @@ function renderHistory(){
 function resetHistory(){if(confirm("Verlauf löschen?")){save("wkHistory",[]);renderHistory();renderHeader();}}
 
 /* ===================== BACKUP (Export / Import) ===================== */
-const BACKUP_KEYS=["dayState","wkHistory","wkMode","wkSets","wkProgress","wkStartDate","wkWeight","wkSkills","wkWins","shopChecked","soundOn"];
+const BACKUP_KEYS=["dayState","wkHistory","wkMode","wkSets","wkProgress","wkStartDate","wkWeight","wkSkills","wkWins","shopChecked","soundOn","skillStage","wkSatMode"];
 function exportData(){
   const data={_app:"DailyOS",_v:1,_exported:new Date().toISOString()};
   BACKUP_KEYS.forEach(k=>{ const v=localStorage.getItem(k); if(v!==null){ try{data[k]=JSON.parse(v);}catch(e){} } });
@@ -1187,7 +1330,7 @@ function toggleSound(){const on=!sndOn(); save("soundOn",on); renderSound(); if(
 (function init(){
   if(load("wkStartDate",null)===null) save("wkStartDate",new Date().toISOString());  // Programmstart = heute
   S.mode=load("wkMode","park"); S.sets=load("wkSets",2); S.wo=suggestNext();
-  renderRoutine(); renderWeekplan(); renderMeals(); renderShop();
+  renderRoutine(); renderWeekplan(); renderSkillTracks(); renderMeals(); renderShop();
   renderHeader(); renderSeg(); renderSetupOverview(); renderHistory(); renderPhaseHint();
   renderPrecall(); renderReframes(); renderObjections(); renderWins(); renderConditioning();
   renderWeight(); renderSkills(); renderSound();
